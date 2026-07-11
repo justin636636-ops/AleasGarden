@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alea's Garden - 单人离线版</title>
+  <link rel="stylesheet" href="src/styles.css?v=26-07-05-19-43">
+</head>
+<body>
+  <canvas id="automationCanvas" aria-hidden="true"></canvas>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <h1><span>Alea's Garden</span><small>单人离线 HTML 版</small></h1>
+        <span class="version-badge" aria-label="版本号">v26-07-05-19-43</span>
+        <p id="statusText">在 5 年内经营花园，终局达到 25 分即胜利。</p>
+      </div>
+      <form class="toolbar" autocomplete="off">
+        <label>
+          <span>随机种子</span>
+          <input id="seedInput" type="number" min="1" max="4294967295" step="1" placeholder="随机">
+        </label>
+        <button id="newGameBtn" class="primary" type="button">新游戏</button>
+        <button id="undoBtn" type="button">撤销</button>
+        <button id="clearSaveBtn" type="button">清除存档</button>
+        <button id="themeToggleBtn" type="button" aria-pressed="false">深色</button>
+        <button id="rulesBtn" type="button">规则</button>
+        <button id="catalogBtn" type="button">图鉴</button>
+        <button id="logBtn" type="button">日志</button>
+      </form>
+    </header>
+
+    <section class="status-strip" aria-label="游戏状态">
+      <div class="result" id="resultBox" hidden></div>
+      <div><span>年份</span><strong id="yearText">1 / 5</strong></div>
+      <div><span>阶段</span><strong id="phaseText">行动</strong></div>
+      <div><span>花</span><strong id="blossomText">0</strong></div>
+      <div><span>阳光</span><strong id="sunText">0</strong></div>
+      <div><span>里程碑</span><strong id="milestoneText">0</strong></div>
+      <div><span>韧性</span><strong id="resiliencyText">0</strong></div>
+      <div><span>分数</span><strong id="scoreText">0 / 25</strong></div>
+    </section>
+
+    <section class="table" aria-label="游戏桌面">
+      <section class="garden-zone">
+        <div class="zone-title">
+          <h2>当前花园</h2>
+          <div class="zone-actions">
+            <button id="replantBtn" type="button">Replant</button>
+            <span id="deckSummary"></span>
+          </div>
+        </div>
+        <section id="resourceTrackPanel" class="resource-track-panel" aria-label="资源轨道">
+          <div class="track-scroll">
+            <div class="track-board">
+              <img src="assets/cards/track-board.jpg?v=tracks-compact-1" alt="年份、花朵和阳光轨道">
+              <span id="yearMarker" class="track-marker year" aria-label="年份标记"></span>
+              <span id="blossomMarker" class="track-marker blossom" aria-label="花朵标记"></span>
+              <span id="sunMarker" class="track-marker sun" aria-label="阳光标记"></span>
+            </div>
+          </div>
+        </section>
+        <div id="gardenCards" class="garden-cards"></div>
+        <section id="gardenShopPanel" class="garden-shop-panel" hidden>
+          <div class="zone-title">
+            <h3>扩展商店</h3>
+            <span id="gardenShopHint"></span>
+          </div>
+          <div id="expansionOffer" class="shop-card-row"></div>
+        </section>
+        <section id="endgameDeckUpgradePanel" class="garden-shop-panel endgame-deck-upgrades" hidden>
+          <div class="zone-title">
+            <h3>终局可升级牌库</h3>
+            <span id="endgameDeckUpgradeHint"></span>
+          </div>
+          <div id="endgameDeckUpgrades" class="endgame-upgrade-list"></div>
+        </section>
+      </section>
+
+      <aside class="action-zone">
+        <section id="actionPilesPanel" class="panel">
+          <div class="zone-title">
+            <h2>行动牌堆</h2>
+            <span id="actionHint">选择任一堆顶牌</span>
+          </div>
+          <div class="action-piles">
+            <button id="pile0Btn" class="pile-btn" type="button"></button>
+            <button id="pile1Btn" class="pile-btn" type="button"></button>
+          </div>
+        </section>
+
+        <section id="currentActionPanel" class="panel" hidden>
+          <div class="zone-title">
+            <h2 id="currentActionTitle">当前行动</h2>
+            <button id="failBtn" type="button">无法放置</button>
+          </div>
+          <div id="currentActionCard" class="current-card"></div>
+          <div class="placement-tools">
+            <button id="submitPlacementBtn" class="primary" type="button">提交放置</button>
+            <button id="clearPlacementBtn" type="button">清空选择</button>
+            <span id="placementCount"></span>
+          </div>
+          <div id="resiliencyControl" class="resiliency-control" hidden>
+            <span id="resiliencyLabel">本段使用韧性</span>
+            <div class="stepper" aria-label="本段使用韧性">
+              <button id="rotReductionMinusBtn" type="button" aria-label="减少本段使用韧性">-</button>
+              <strong id="rotReductionText">0</strong>
+              <button id="rotReductionPlusBtn" type="button" aria-label="增加本段使用韧性">+</button>
+            </div>
+          </div>
+          <div id="resourceChoiceControl" class="resource-choice-control" hidden>
+            <span id="resourceChoiceLabel">选择三巴纹资源</span>
+            <div class="resource-choice-buttons">
+              <button class="resource-choice-btn" type="button" data-resource="blossom">花</button>
+              <button class="resource-choice-btn" type="button" data-resource="sun">阳光</button>
+              <button class="resource-choice-btn" type="button" data-resource="resiliency">韧性</button>
+            </div>
+          </div>
+          <div id="lanternChoiceControl" class="lantern-choice-control" hidden>
+            <span id="lanternChoiceLabel">选择是否移除石灯笼上的腐败</span>
+            <div class="lantern-choice-buttons">
+              <button id="lanternRemoveBtn" class="primary" type="button">移除腐败 +1 花</button>
+              <button id="lanternKeepBtn" type="button">保留腐败</button>
+            </div>
+          </div>
+          <p id="placementHint" class="placement-hint"></p>
+        </section>
+
+        <section id="upgradePanel" class="panel" hidden>
+          <div class="zone-title">
+            <h2 id="upgradeTitle">升级阶段</h2>
+            <button id="finishUpgradeBtn" class="primary" type="button">完成阶段</button>
+          </div>
+          <p id="upgradePanelHint" class="phase-note"></p>
+        </section>
+      </aside>
+    </section>
+
+    <section class="codex-strip">
+      <div class="zone-title">
+        <h2>牌库检查</h2>
+        <span id="deckPreviewSummary"></span>
+      </div>
+      <div id="deckPreview" class="deck-preview"></div>
+      <div class="zone-title discard-title">
+        <h3>弃牌</h3>
+        <span id="discardSummary"></span>
+      </div>
+      <div id="discardPreview" class="deck-preview discard-preview"></div>
+    </section>
+
+    <footer class="footer">
+      <span>个人 PnP 辅助实现。公开发布前请确认插画与牌图授权。</span>
+      <span>规则与卡图来自本地 Rules PDF。</span>
+    </footer>
+  </main>
+
+  <dialog id="rulesDialog">
+    <div class="dialog-head">
+      <h2>规则摘要</h2>
+      <button id="closeRulesBtn" type="button">关闭</button>
+    </div>
+    <ol class="rules-list">
+      <li>每局 5 年。每年反复选择两个行动牌堆之一的堆顶牌，依序完成浇水、腐败和奖励。</li>
+      <li>浇水形状可旋转或翻面；水和腐败都只能放在未占用花园格。若当前行动无法完整执行，清空花园所有方块并进入下一阶段。</li>
+      <li>花朵用于升级或购买扩展牌；阳光上限 10，到达轨道上的奖励格会将花园牌加入当前花园；松树产生韧性，可抵消下一次腐败。</li>
+      <li>升级阶段翻开 3 张扩展牌，可花费花升级当前花园中的牌，或将扩展加入花园牌库。完成后洗回花园牌，进入下一年。</li>
+      <li>第 5 年行动失败后进入终局升级；终局只计算已升级花园牌左下角的胜利点，25 分以上获胜。</li>
+    </ol>
+  </dialog>
+
+  <dialog id="catalogDialog" class="catalog-dialog">
+    <div class="dialog-head">
+      <div>
+        <h2>图鉴</h2>
+        <p class="card-detail-meta">全部花园牌、行动牌与规则书 Appendix 效果说明</p>
+      </div>
+      <button id="closeCatalogBtn" type="button">关闭</button>
+    </div>
+    <div class="catalog-tabs" role="tablist" aria-label="图鉴分类">
+      <button id="catalogGardenTab" class="catalog-tab is-active" type="button" data-catalog-tab="garden" role="tab" aria-selected="true">花园牌</button>
+      <button id="catalogActionTab" class="catalog-tab" type="button" data-catalog-tab="action" role="tab" aria-selected="false">行动牌</button>
+      <button id="catalogEffectsTab" class="catalog-tab" type="button" data-catalog-tab="effects" role="tab" aria-selected="false">效果说明</button>
+    </div>
+    <section id="catalogGardenPanel" class="catalog-panel" data-catalog-panel="garden" role="tabpanel"></section>
+    <section id="catalogActionPanel" class="catalog-panel" data-catalog-panel="action" role="tabpanel" hidden></section>
+    <section id="catalogEffectsPanel" class="catalog-panel" data-catalog-panel="effects" role="tabpanel" hidden></section>
+  </dialog>
+
+  <dialog id="logDialog">
+    <div class="dialog-head">
+      <h2>游戏日志</h2>
+      <button id="closeLogBtn" type="button">关闭</button>
+    </div>
+    <ol id="logList" class="log-list"></ol>
+  </dialog>
+
+  <dialog id="cardDialog" class="card-detail-dialog">
+    <div class="dialog-head">
+      <div>
+        <h2 id="cardDialogTitle">卡牌详情</h2>
+        <p id="cardDialogMeta" class="card-detail-meta"></p>
+      </div>
+      <button id="closeCardBtn" type="button">关闭</button>
+    </div>
+    <div id="cardDetailImages" class="card-detail-images"></div>
+    <section class="card-effects" aria-label="效果解释">
+      <h3>效果解释</h3>
+      <ul id="cardEffectList" class="effect-list"></ul>
+    </section>
+  </dialog>
+
+  <script src="src/game.js?v=26-07-05-19-43"></script>
+  <script src="src/app.js?v=26-07-05-19-43"></script>
+</body>
+</html>

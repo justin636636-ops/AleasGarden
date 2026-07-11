@@ -1,0 +1,646 @@
+[
+  {
+    "page": 1,
+    "kind": "garden",
+    "src": "assets/cards/card-01.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 2,
+    "kind": "garden",
+    "src": "assets/cards/card-02.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 3,
+    "kind": "garden",
+    "src": "assets/cards/card-03.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 4,
+    "kind": "garden",
+    "src": "assets/cards/card-04.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 5,
+    "kind": "garden",
+    "src": "assets/cards/card-05.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 6,
+    "kind": "garden",
+    "src": "assets/cards/card-06.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 7,
+    "kind": "garden",
+    "src": "assets/cards/card-07.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 8,
+    "kind": "garden",
+    "src": "assets/cards/card-08.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 9,
+    "kind": "garden",
+    "src": "assets/cards/card-09.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 10,
+    "kind": "garden",
+    "src": "assets/cards/card-10.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 11,
+    "kind": "garden",
+    "src": "assets/cards/card-11.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 12,
+    "kind": "garden",
+    "src": "assets/cards/card-12.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 13,
+    "kind": "garden",
+    "src": "assets/cards/card-13.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 14,
+    "kind": "garden",
+    "src": "assets/cards/card-14.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 15,
+    "kind": "garden",
+    "src": "assets/cards/card-15.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 16,
+    "kind": "garden",
+    "src": "assets/cards/card-16.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 17,
+    "kind": "garden",
+    "src": "assets/cards/card-17.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 18,
+    "kind": "garden",
+    "src": "assets/cards/card-18.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 19,
+    "kind": "garden",
+    "src": "assets/cards/card-19.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 20,
+    "kind": "garden",
+    "src": "assets/cards/card-20.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 21,
+    "kind": "garden",
+    "src": "assets/cards/card-21.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 22,
+    "kind": "garden",
+    "src": "assets/cards/card-22.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 23,
+    "kind": "garden",
+    "src": "assets/cards/card-23.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 24,
+    "kind": "garden",
+    "src": "assets/cards/card-24.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 25,
+    "kind": "garden",
+    "src": "assets/cards/card-25.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 26,
+    "kind": "garden",
+    "src": "assets/cards/card-26.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 27,
+    "kind": "garden",
+    "src": "assets/cards/card-27.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 28,
+    "kind": "garden",
+    "src": "assets/cards/card-28.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 29,
+    "kind": "garden",
+    "src": "assets/cards/card-29.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 30,
+    "kind": "garden",
+    "src": "assets/cards/card-30.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 31,
+    "kind": "garden",
+    "src": "assets/cards/card-31.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 32,
+    "kind": "garden",
+    "src": "assets/cards/card-32.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 33,
+    "kind": "garden",
+    "src": "assets/cards/card-33.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 34,
+    "kind": "garden",
+    "src": "assets/cards/card-34.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 35,
+    "kind": "garden",
+    "src": "assets/cards/card-35.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 36,
+    "kind": "garden",
+    "src": "assets/cards/card-36.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 37,
+    "kind": "garden",
+    "src": "assets/cards/card-37.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 38,
+    "kind": "garden",
+    "src": "assets/cards/card-38.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 39,
+    "kind": "garden",
+    "src": "assets/cards/card-39.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 40,
+    "kind": "garden",
+    "src": "assets/cards/card-40.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 41,
+    "kind": "garden",
+    "src": "assets/cards/card-41.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 42,
+    "kind": "garden",
+    "src": "assets/cards/card-42.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 43,
+    "kind": "garden",
+    "src": "assets/cards/card-43.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 44,
+    "kind": "garden",
+    "src": "assets/cards/card-44.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 45,
+    "kind": "garden",
+    "src": "assets/cards/card-45.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 46,
+    "kind": "garden",
+    "src": "assets/cards/card-46.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 47,
+    "kind": "garden",
+    "src": "assets/cards/card-47.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 48,
+    "kind": "garden",
+    "src": "assets/cards/card-48.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 49,
+    "kind": "garden",
+    "src": "assets/cards/card-49.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 50,
+    "kind": "garden",
+    "src": "assets/cards/card-50.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 51,
+    "kind": "garden",
+    "src": "assets/cards/card-51.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 52,
+    "kind": "garden",
+    "src": "assets/cards/card-52.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 53,
+    "kind": "action",
+    "src": "assets/cards/card-53.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 54,
+    "kind": "action",
+    "src": "assets/cards/card-54.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 55,
+    "kind": "action",
+    "src": "assets/cards/card-55.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 56,
+    "kind": "action",
+    "src": "assets/cards/card-56.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 57,
+    "kind": "action",
+    "src": "assets/cards/card-57.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 58,
+    "kind": "action",
+    "src": "assets/cards/card-58.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 59,
+    "kind": "action",
+    "src": "assets/cards/card-59.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 60,
+    "kind": "action",
+    "src": "assets/cards/card-60.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 61,
+    "kind": "action",
+    "src": "assets/cards/card-61.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 62,
+    "kind": "action",
+    "src": "assets/cards/card-62.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 63,
+    "kind": "action",
+    "src": "assets/cards/card-63.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 64,
+    "kind": "action",
+    "src": "assets/cards/card-64.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 65,
+    "kind": "action",
+    "src": "assets/cards/card-65.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 66,
+    "kind": "action",
+    "src": "assets/cards/card-66.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 67,
+    "kind": "action",
+    "src": "assets/cards/card-67.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 68,
+    "kind": "action",
+    "src": "assets/cards/card-68.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 69,
+    "kind": "action",
+    "src": "assets/cards/card-69.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 70,
+    "kind": "action",
+    "src": "assets/cards/card-70.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 71,
+    "kind": "action",
+    "src": "assets/cards/card-71.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 72,
+    "kind": "action",
+    "src": "assets/cards/card-72.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 73,
+    "kind": "action",
+    "src": "assets/cards/card-73.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 74,
+    "kind": "action",
+    "src": "assets/cards/card-74.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 75,
+    "kind": "action",
+    "src": "assets/cards/card-75.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 76,
+    "kind": "action",
+    "src": "assets/cards/card-76.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 77,
+    "kind": "action",
+    "src": "assets/cards/card-77.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 78,
+    "kind": "action",
+    "src": "assets/cards/card-78.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 79,
+    "kind": "action",
+    "src": "assets/cards/card-79.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 80,
+    "kind": "action",
+    "src": "assets/cards/card-80.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 81,
+    "kind": "action",
+    "src": "assets/cards/card-81.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 82,
+    "kind": "action",
+    "src": "assets/cards/card-82.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 83,
+    "kind": "action",
+    "src": "assets/cards/card-83.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 84,
+    "kind": "action",
+    "src": "assets/cards/card-84.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 85,
+    "kind": "reference",
+    "src": "assets/cards/card-85.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 86,
+    "kind": "reference",
+    "src": "assets/cards/card-86.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 87,
+    "kind": "reference",
+    "src": "assets/cards/card-87.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 88,
+    "kind": "reference",
+    "src": "assets/cards/card-88.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 89,
+    "kind": "reference",
+    "src": "assets/cards/card-89.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 90,
+    "kind": "reference",
+    "src": "assets/cards/card-90.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 91,
+    "kind": "reference",
+    "src": "assets/cards/card-91.jpg",
+    "width": 429,
+    "height": 602
+  },
+  {
+    "page": 92,
+    "kind": "reference",
+    "src": "assets/cards/card-92.jpg",
+    "width": 429,
+    "height": 602
+  }
+]
