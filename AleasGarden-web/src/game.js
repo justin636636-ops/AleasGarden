@@ -121,45 +121,45 @@
   };
 
   const STARTERS = [
-    garden("s1", "Starting Card A", 1, 2, 2, 1, ["blossom", "empty", "empty", "pine"], ["blossom", "empty", "pine", "pine"]),
-    garden("s2", "Starting Card B", 3, 4, 2, 1, ["empty", "blossom", "empty", "sun"], ["sun", "blossom", "empty", "sun"]),
-    garden("s3", "Starting Card C", 5, 6, 2, 1, ["empty", "pine", "empty", "blossom"], ["pine", "pine", "empty", "blossom"]),
-    garden("s4", "Starting Card D", 7, 8, 4, 2, ["sun", "empty", "blossom", "empty"], ["sun", "empty", gold("blossom"), "empty"]),
-    garden("s5", "Starting Card E", 9, 10, 4, 2, ["empty", "empty", "blossom", "sun"], ["empty", "empty", "blossom", gold("sun")]),
-    garden("s6", "Starting Card F", 11, 12, 4, 2, ["empty", "sun", "pine", "empty"], ["empty", "sun", gold("pine"), "empty"]),
-    garden("s7", "Starting Card G", 13, 14, 6, 3, ["pine", "empty", "sun", "empty"], ["pine", gold("sun"), gold("sun"), "empty"]),
-    garden("s8", "Starting Card H", 15, 16, 6, 3, ["pine", "blossom", "empty", "empty"], ["pine", gold("blossom"), "blossom", "empty"]),
+    garden("s1", "Starting Card A", 1, 2, 2, 1),
+    garden("s2", "Starting Card B", 3, 4, 2, 1),
+    garden("s3", "Starting Card C", 5, 6, 2, 1),
+    garden("s4", "Starting Card D", 7, 8, 4, 2),
+    garden("s5", "Starting Card E", 9, 10, 4, 2),
+    garden("s6", "Starting Card F", 11, 12, 4, 2),
+    garden("s7", "Starting Card G", 13, 14, 6, 3),
+    garden("s8", "Starting Card H", 15, 16, 6, 3),
   ];
 
   const EXPANSIONS = [
-    garden("e1", "Garden Extension", 17, 18, 5, 5, ["sun", "blossom", "blossom", "pine"], ["sun", gold("blossom"), "blossom", gold("pine")]),
-    garden("e2", "Garden Extension", 19, 20, 3, 3, ["sun", "empty", "blossom", "pine"], ["sun", gold("blossom"), "blossom", "pine"], { extension: true }),
-    garden("e3", "Mitsudomoe", 21, 22, 3, 3, ["mitsudomoe", "empty", "mitsudomoe", "empty"], ["empty", "mitsudomoe", "mitsudomoe", "mitsudomoe"], { extension: true }),
-    garden("e4", "Mushrooms", 23, 24, 3, 3, ["sun", "mushroom", "empty", "empty"], ["sun", "mushroom", "empty", "mushroom"]),
-    garden("e5", "Chidori", 25, 26, 4, 4, ["chidori", "empty", "empty", "empty"], ["chidori", "empty", "pine", "empty"], { extension: true }),
-    garden("e6", "Parasol", 27, 28, 3, 3, ["parasol", "empty", "sun", "empty"], ["parasol", "empty", "sun", gold("sun")], { extension: true }),
-    garden("e7", "Raked Sand", 29, 30, 4, 4, ["empty", "pine", "raked", "empty"], [gold("pine"), "pine", "raked", "empty"]),
-    garden("e8", "Spring Breeze", 31, 32, 5, 5, ["empty", "spring", "empty", "empty"], ["empty", "spring", "empty", "empty"]),
-    garden("e9", "Tea", 33, 34, 3, 3, ["tea", "empty", "empty", "tea"], ["tea", "empty", "empty", "tea"]),
-    garden("e10", "Butterflies", 35, 36, 6, 6, ["empty", "butterflies", "butterflies", "sun"], ["sun", "butterflies", "butterflies", "sun"]),
-    garden("e11", "Dragonfly", 37, 38, 5, 5, ["empty", "empty", "dragonfly", "empty"], ["empty", "empty", "dragonfly", "empty"]),
-    garden("e12", "Crane", 39, 40, 4, 4, ["pine", "empty", "crane", "sun"], ["pine", "sun", "crane", "sun"]),
-    garden("e13", "Koi", 41, 42, 5, 5, ["empty", "empty", "koi", "empty"], ["empty", "empty", "koi", "empty"], { extension: true }),
-    garden("e14", "Bridge", 43, 44, 4, 4, ["empty", "sun", "empty", "bridge"], [gold("sun"), "sun", "empty", "bridge"]),
-    garden("e15", "Mist", 45, 46, 5, 5, ["empty", "empty", "mist", "empty"], ["empty", "empty", "mist", "empty"]),
-    garden("e16", "Lotus", 47, 48, 5, 5, ["lotus", "empty", "pine", "pine"], ["empty", "lotus", "pine", "pine"], { extension: true }),
-    garden("e17", "Treasure Knot", 49, 50, 6, 6, ["empty", "empty", "treasure", "empty"], ["empty", "empty", "treasure", "empty"]),
-    garden("e18", "Stone Lantern", 51, 52, 4, 4, ["pine", "empty", "empty", "lantern"], ["pine", "empty", "empty", "lantern"]),
+    garden("e1", "Garden Extension", 17, 18, 5, 5),
+    garden("e2", "Garden Extension", 19, 20, 3, 3, { extension: true }),
+    garden("e3", "Mitsudomoe", 21, 22, 3, 3, { extension: true }),
+    garden("e4", "Mushrooms", 23, 24, 3, 3),
+    garden("e5", "Chidori", 25, 26, 4, 4, { extension: true }),
+    garden("e6", "Parasol", 27, 28, 3, 3, { extension: true }),
+    garden("e7", "Raked Sand", 29, 30, 4, 4),
+    garden("e8", "Spring Breeze", 31, 32, 5, 5),
+    garden("e9", "Tea", 33, 34, 3, 3),
+    garden("e10", "Butterflies", 35, 36, 6, 6),
+    garden("e11", "Dragonfly", 37, 38, 5, 5),
+    garden("e12", "Crane", 39, 40, 4, 4),
+    garden("e13", "Koi", 41, 42, 5, 5, { extension: true }),
+    garden("e14", "Bridge", 43, 44, 4, 4),
+    garden("e15", "Mist", 45, 46, 5, 5),
+    garden("e16", "Lotus", 47, 48, 5, 5, { extension: true }),
+    garden("e17", "Treasure Knot", 49, 50, 6, 6),
+    garden("e18", "Stone Lantern", 51, 52, 4, 4),
   ];
 
   const ACTION_PAIRS = [
     pair(1, side(53, [[0, 0], [1, 0], [2, 0], [1, 1]], [{ count: 5 }], { blossom: 1, sun: 1 }), side(54, [[0, 0], [1, 0], [2, 0], [1, 1]], [{ count: 4, coverPlots: ["sun"] }], { blossom: 1, sun: 1 })),
-    pair(2, side(55, [[0, 0], [1, 0], [1, 1], [2, 1]], [{ count: 4, coverPlots: ["pine"] }], { blossom: 1 }), side(56, [[0, 0], [1, 0], [1, 1], [2, 1]], [{ count: 1, locked: true }, { count: 1, locked: true }, { count: 1, locked: true }, { count: 1 }])),
-    pair(3, side(57, [[0, 0], [0, 2]], [{ count: 3 }]), side(58, [[0, 0], [0, 1]], [{ count: 2 }], { blossom: 1 })),
+    pair(2, side(55, [[0, 0], [1, 0], [1, 1], [2, 1]], [{ count: 4, coverPlots: ["pine"] }], { blossom: 1 }), side(56, [[0, 0], [1, 0], [1, 1], [2, 1]], [{ count: 1, locked: true }, { count: 1, locked: true }, { count: 1, locked: true }, { count: 1 }], { blossom: 1 })),
+    pair(3, side(57, [[0, 0], [0, 2]], [{ count: 3 }]), side(58, [[0, 0], [0, 1]], [{ count: 2 }])),
     pair(4, side(59, [[0, 0], [0, 1], [0, 2], [0, 3]], [{ count: 4 }], { blossom: 1 }), side(60, { count: 4, connected: true }, [{ count: 4, line: true }], { blossom: 1 })),
     pair(5, side(61, [[0, 0], [0, 1], [0, 2], [1, 2]], [{ count: 2, locked: true, coverPlots: ["pine"] }, { count: 2 }], { blossom: 1 }), side(62, [[0, 0], [0, 1], [0, 2], [1, 2]], [{ count: 4, diagonal: true }], { blossom: 1 })),
     pair(6, side(63, [[0, 0], [1, 0], [0, 1], [1, 1]], [{ count: 4 }], { blossom: 1 }), side(64, [[0, 0], [1, 0], waterPoint(0, 1, ["pine"]), [1, 1]], [{ count: 3 }], { blossom: 1, sun: 1 })),
-    pair(7, side(65, [[0, 0], [2, 0], [1, 1], [0, 2]], [{ count: 4 }], { blossom: 2, sun: 1 }), side(66, [[0, 0], [2, 0]], [{ count: 5 }], { blossom: 1 })),
+    pair(7, side(65, [[0, 0], [2, 0], [1, 1], [0, 2]], [{ count: 4 }], { blossom: 2, sun: 1 }), side(66, { count: 2, disconnected: true }, [{ count: 5 }], { blossom: 1 })),
     pair(8, side(67, [[0, 0], [0, 1], [0, 2], [1, 2], [2, 2]], [{ count: 1, locked: true, coverPlots: ["blossom"] }, { count: 3 }], { blossom: 2 }), side(68, [waterPoint(0, 0, ["blossom"]), [0, 1], [0, 2], [1, 2], [2, 2]], [{ count: 4 }], { blossom: 1, sun: 1 })),
     pair(9, side(69, [[2, 0], [1, 1], [0, 2]], [{ count: 3, diagonal: true }]), side(70, [[0, 0]], [{ count: 2 }])),
     pair(10, side(71, [[0, 0], [2, 0], [1, 1], [1, 2]], [{ count: 2 }, { count: 2 }], { blossom: 1 }), side(72, [[0, 0], [1, 0], [2, 0], [1, 2]], [{ count: 2 }, { count: 2 }], { blossom: 1 })),
@@ -179,13 +179,11 @@
   let history = [];
   const allGardenDefs = [...STARTERS, ...EXPANSIONS];
   const gardenById = Object.fromEntries(allGardenDefs.map((c) => [c.id, c]));
+  const defaultGardenLayouts = clone(window.AleasGardenDefaultLayouts || {});
+  let gardenLayouts = clone(defaultGardenLayouts);
 
-  function garden(id, name, frontPage, backPage, cost, vp, front, back, flags = {}) {
-    return { id, name, frontPage, backPage, cost, vp, front, back, flags };
-  }
-
-  function gold(plot) {
-    return { plot, golden: true };
+  function garden(id, name, frontPage, backPage, cost, vp, flags = {}) {
+    return { id, name, frontPage, backPage, cost, vp, flags };
   }
 
   function side(page, water, rot = [], bonus = {}, flags = {}) {
@@ -251,12 +249,12 @@
     if (payload.rngState) rng.setState(payload.rngState);
   }
 
-  function ensureStateShape() {
-    state.cubes = state.cubes || {};
-    state.cubeRounds = state.cubeRounds || {};
-    if (state.currentAction) {
-      state.currentAction.rotKeys = Array.isArray(state.currentAction.rotKeys) ? state.currentAction.rotKeys : [];
-      state.currentAction.rotReductions = state.currentAction.rotReductions || {};
+  function ensureStateShape(target = state) {
+    target.cubes = target.cubes || {};
+    target.cubeRounds = target.cubeRounds || {};
+    if (target.currentAction) {
+      target.currentAction.rotKeys = Array.isArray(target.currentAction.rotKeys) ? target.currentAction.rotKeys : [];
+      target.currentAction.rotReductions = target.currentAction.rotReductions || {};
     }
   }
 
@@ -266,7 +264,9 @@
   }
 
   function newGame(options = {}) {
-    rng = createRng(options.seed);
+    const hasExplicitSeed = options.seed !== undefined && options.seed !== null && String(options.seed).trim() !== "";
+    const seed = hasExplicitSeed ? options.seed : randomSeedExcept(state?.seed);
+    rng = createRng(seed);
     nextInstance = 1;
     history = [];
     const starting = shuffle(STARTERS.map((c) => makeCard(c.id)));
@@ -296,6 +296,16 @@
     drawGarden();
     log(`新游戏开始。Seed ${state.seed}。`);
     return getPublicState();
+  }
+
+  function randomSeedExcept(excludedSeed) {
+    const excluded = Number(excludedSeed) >>> 0;
+    let seed = 0;
+    do {
+      seed = Math.floor(Math.random() * 0xffffffff) >>> 0;
+      if (seed === 0) seed = 1;
+    } while (seed === excluded);
+    return seed;
   }
 
   function rebuildActionPiles() {
@@ -341,29 +351,20 @@
     return `assets/cards/card-${String(page).padStart(2, "0")}.jpg?v=bleed-crop-1`;
   }
 
-  function getPlot(card, row) {
-    const def = gardenById[card.defId];
-    const side = card.upgraded ? def.back : def.front;
-    return normalizePlotEntry(side[row]).plot;
-  }
-
-  function getPlotInfo(card, row) {
-    const def = gardenById[card.defId];
-    const side = card.upgraded ? def.back : def.front;
-    return normalizePlotEntry(side[row]);
-  }
-
-  function normalizePlotEntry(entry) {
-    if (!entry) return { plot: "empty", golden: false };
-    if (typeof entry === "string") return { plot: entry, golden: false };
-    return { plot: entry.plot || "empty", golden: Boolean(entry.golden) };
+  function layoutSide(card, layouts = gardenLayouts) {
+    const layout = layouts.cards?.[card.defId];
+    return layout?.[card.upgraded ? "back" : "front"] || null;
   }
 
   function plotList(side) {
-    return [0, 1, 2, 3].map((y) => {
-      const { plot, golden } = normalizePlotEntry(side[y]);
-      return { y, plot, golden, icon: ICONS[plot] || plot };
-    });
+    return (side?.plots || []).map((entry) => ({
+      localX: entry.x,
+      y: entry.y,
+      plot: entry.type,
+      golden: Boolean(entry.golden),
+      upgraded: Boolean(entry.upgraded),
+      icon: ICONS[entry.type] || entry.type,
+    }));
   }
 
   function publicGardenCardBase(card, def) {
@@ -376,8 +377,10 @@
       backPage: def.backPage,
       frontImage: cardImage(def.frontPage),
       backImage: cardImage(def.backPage),
-      frontPlots: plotList(def.front),
-      backPlots: plotList(def.back),
+      frontPlots: plotList(gardenLayouts.cards[def.id].front),
+      backPlots: plotList(gardenLayouts.cards[def.id].back),
+      frontColumns: gardenLayouts.cards[def.id].front.columns,
+      backColumns: gardenLayouts.cards[def.id].back.columns,
       flags: { ...def.flags },
     };
   }
@@ -409,12 +412,13 @@
         doubleResiliency: Boolean(sideDef.doubleResiliency),
       },
       waterText: describeWater(sideDef.water),
-      rotText: describeRot(sideDef.rot || []),
-      bonusText: describeBonus(sideDef.bonus || {}, sideDef),
+      rotText: describeRot(sideDef.rot || [], sideDef),
+      bonusText: describeBonus(sideDef.bonus || {}),
     };
   }
 
   function describeWater(water) {
+    if (isDisconnectedWater(water)) return `放置 ${water.count} 个互不正交相邻的水（对角相邻可以）`;
     if (isConnectedWater(water)) return `放置 ${water.count} 个正交连通的水`;
     const points = (water || []).map(normalizeWaterPoint);
     const constrained = points.filter((point) => point.coverPlots?.length);
@@ -422,9 +426,8 @@
     return points.length ? `放置 ${points.length} 个水，形状可旋转或翻面${suffix}` : "无浇水";
   }
 
-  function describeRot(rotList) {
-    if (!rotList.length) return "无腐败";
-    return rotList.map((rot) => {
+  function describeRot(rotList, sideDef = {}) {
+    const parts = rotList.map((rot) => {
       const count = rot.milestoneFormula === "fiveMinusCurrent" ? "5 - 当前里程碑" : (rot.milestone ? "6 - 当前里程碑" : rot.count);
       const bits = [`${count} 个腐败`];
       if (rot.locked) bits.push("锁定");
@@ -433,30 +436,136 @@
       if (rot.coverPlots?.length) bits.push(`至少覆盖 ${plotListLabel(rot.coverPlots)}`);
       if (rot.cover) bits.push("至少覆盖非空格");
       return bits.join("，");
-    }).join("；");
+    });
+    if (sideDef.doubleResiliency) parts.push("本次浇水获得的韧性加倍");
+    return parts.length ? parts.join("；") : "无腐败";
   }
 
-  function describeBonus(bonus, sideDef) {
+  function describeBonus(bonus) {
     const parts = [];
     for (const [kind, amount] of Object.entries(bonus || {})) parts.push(`+${amount} ${labelResource(kind)}`);
-    if (sideDef.doubleResiliency) parts.push("本次浇水获得的韧性加倍");
     return parts.length ? parts.join("，") : "无奖励";
   }
 
+  function validateGardenLayouts(candidate) {
+    if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) throw new Error("布局文件结构无效");
+    if (candidate.format !== "aleas-garden-layouts" || candidate.version !== 2) throw new Error("布局文件格式或版本不兼容");
+    if (!candidate.cards || typeof candidate.cards !== "object" || Array.isArray(candidate.cards)) throw new Error("布局文件缺少卡牌数据");
+    const expectedIds = allGardenDefs.map((def) => def.id).sort();
+    const actualIds = Object.keys(candidate.cards).sort();
+    if (JSON.stringify(actualIds) !== JSON.stringify(expectedIds)) throw new Error("布局文件必须包含全部 26 张花园牌");
+    const validPlots = new Set(Object.keys(ICONS));
+    for (const def of allGardenDefs) {
+      const cardLayout = candidate.cards[def.id];
+      for (const [sideName, page] of [["front", def.frontPage], ["back", def.backPage]]) {
+        const sideLayout = cardLayout?.[sideName];
+        if (!sideLayout || sideLayout.page !== page) throw new Error(`${def.id} ${sideName} 页码无效`);
+        if (!Number.isInteger(sideLayout.columns) || sideLayout.columns < 1 || sideLayout.columns > 3) throw new Error(`${def.id} ${sideName} 列数无效`);
+        if (!Array.isArray(sideLayout.plots) || !sideLayout.plots.length) throw new Error(`${def.id} ${sideName} 缺少地块`);
+        const seen = new Set();
+        for (const entry of sideLayout.plots) {
+          if (!entry || typeof entry !== "object" || Array.isArray(entry)) throw new Error(`${def.id} ${sideName} 地块结构无效`);
+          if (!Number.isInteger(entry.x) || entry.x < 0 || entry.x >= sideLayout.columns || !Number.isInteger(entry.y) || entry.y < 0 || entry.y > 3) {
+            throw new Error(`${def.id} ${sideName} 地块坐标越界`);
+          }
+          const key = `${entry.x},${entry.y}`;
+          if (seen.has(key)) throw new Error(`${def.id} ${sideName} 地块坐标重复`);
+          seen.add(key);
+          if (!validPlots.has(entry.type)) throw new Error(`${def.id} ${sideName} 地块类型无效`);
+          if (typeof entry.golden !== "boolean") throw new Error(`${def.id} ${sideName} 金色标记无效`);
+          if (typeof entry.upgraded !== "boolean") throw new Error(`${def.id} ${sideName} 升级空地标记无效`);
+          if (entry.upgraded && entry.type !== "empty") throw new Error(`${def.id} ${sideName} 只有空地可以标记为升级空地`);
+          if (entry.golden && !["blossom", "sun", "pine"].includes(entry.type)) throw new Error(`${def.id} ${sideName} 只有资源地块可以为金色`);
+        }
+        if (!sideLayout.plots.some((entry) => entry.x === sideLayout.columns - 1)) throw new Error(`${def.id} ${sideName} 最右列不能完全为空`);
+      }
+    }
+    return true;
+  }
+
+  function migrateGardenLayouts(candidate) {
+    if (!candidate || typeof candidate !== "object" || Array.isArray(candidate) || candidate.format !== "aleas-garden-layouts") {
+      throw new Error("布局文件结构无效");
+    }
+    if (candidate.version === 2) {
+      const current = clone(candidate);
+      validateGardenLayouts(current);
+      return current;
+    }
+    if (candidate.version !== 1) throw new Error("布局文件格式或版本不兼容");
+    const migrated = clone(candidate);
+    migrated.version = 2;
+    for (const cardLayout of Object.values(migrated.cards || {})) {
+      for (const sideName of ["front", "back"]) {
+        for (const entry of cardLayout?.[sideName]?.plots || []) {
+          entry.upgraded = entry.type === "empty" && sideName === "back";
+        }
+      }
+    }
+    validateGardenLayouts(migrated);
+    return migrated;
+  }
+
+  function getGardenLayouts() {
+    return clone(gardenLayouts);
+  }
+
+  function getDefaultGardenLayouts() {
+    return clone(defaultGardenLayouts);
+  }
+
+  function setGardenLayouts(candidate) {
+    const migrated = migrateGardenLayouts(candidate);
+    gardenLayouts = migrated;
+    return getGardenLayouts();
+  }
+
+  const installGardenLayouts = setGardenLayouts;
+
+  validateGardenLayouts(defaultGardenLayouts);
+
+  function gardenPlacements() {
+    const placements = [];
+    let startX = 0;
+    for (const [cardIndex, card] of state.garden.entries()) {
+      const side = layoutSide(card);
+      placements.push({ card, cardIndex, startX, columns: side.columns, side });
+      startX += side.columns;
+    }
+    return placements;
+  }
+
+  function gardenWidth() {
+    return gardenPlacements().reduce((sum, placement) => sum + placement.columns, 0);
+  }
+
   function getCell(x, y) {
-    const card = state.garden[x];
-    if (!card || y < 0 || y > 3) return null;
+    if (!Number.isInteger(x) || !Number.isInteger(y) || y < 0 || y > 3) return null;
+    const placement = gardenPlacements().find((item) => x >= item.startX && x < item.startX + item.columns);
+    if (!placement) return null;
+    const localX = x - placement.startX;
+    const entry = placement.side.plots.find((plot) => plot.x === localX && plot.y === y);
+    if (!entry) return null;
     const key = `${x},${y}`;
-    const { plot, golden } = getPlotInfo(card, y);
-    return { x, y, key, card, plot, golden, cube: state.cubes[key] || null, cubeRound: state.cubeRounds?.[key] || null };
+    return {
+      x,
+      y,
+      localX,
+      key,
+      card: placement.card,
+      cardIndex: placement.cardIndex,
+      plot: entry.type,
+      golden: Boolean(entry.golden),
+      upgraded: Boolean(entry.upgraded),
+      cube: state.cubes[key] || null,
+      cubeRound: state.cubeRounds?.[key] || null,
+    };
   }
 
   function allCells() {
-    const cells = [];
-    for (let x = 0; x < state.garden.length; x += 1) {
-      for (let y = 0; y < 4; y += 1) cells.push(getCell(x, y));
-    }
-    return cells;
+    return gardenPlacements().flatMap((placement) => placement.side.plots.map((entry) => (
+      getCell(placement.startX + entry.x, entry.y)
+    )));
   }
 
   function isUnoccupied(x, y) {
@@ -545,12 +654,13 @@
   }
 
   function legalWaterPlacements(action) {
+    if (isDisconnectedWater(action.water)) return disconnectedWaterPlacements(waterCount(action));
     if (isConnectedWater(action.water)) return connectedGroups(waterCount(action));
     const placements = [];
     for (const variant of shapeVariants(action.water || [])) {
       const w = Math.max(...variant.map((p) => p.x)) + 1;
       const h = Math.max(...variant.map((p) => p.y)) + 1;
-      for (let x = 0; x <= state.garden.length - w; x += 1) {
+      for (let x = 0; x <= gardenWidth() - w; x += 1) {
         for (let y = 0; y <= 4 - h; y += 1) {
           const cells = variant.map((point) => getCell(x + point.x, y + point.y));
           if (cells.every((cell) => cell && !cell.cube) && cellsSatisfyWaterConstraints(cells, variant)) {
@@ -560,6 +670,20 @@
       }
     }
     return uniquePlacements(placements);
+  }
+
+  function disconnectedWaterPlacements(size) {
+    if (size !== 2) return [];
+    const cells = allCells().filter((cell) => !cell.cube);
+    const placements = [];
+    for (let first = 0; first < cells.length; first += 1) {
+      for (let second = first + 1; second < cells.length; second += 1) {
+        const pair = [cells[first], cells[second]];
+        if (Math.abs(pair[0].x - pair[1].x) + Math.abs(pair[0].y - pair[1].y) === 1) continue;
+        placements.push({ cells: pair.map(simpleCell), label: pair.map((cell) => `${cell.x + 1}-${cell.y + 1}`).join(", ") });
+      }
+    }
+    return placements;
   }
 
   function cellsSatisfyWaterConstraints(cells, variant) {
@@ -580,7 +704,17 @@
   }
 
   function simpleCell(cell) {
-    return { x: cell.x, y: cell.y, key: cell.key, plot: cell.plot, golden: Boolean(cell.golden), cube: cell.cube, cubeRound: cell.cubeRound || null };
+    return {
+      x: cell.x,
+      y: cell.y,
+      localX: cell.localX,
+      key: cell.key,
+      plot: cell.plot,
+      golden: Boolean(cell.golden),
+      upgraded: Boolean(cell.upgraded),
+      cube: cell.cube,
+      cubeRound: cell.cubeRound || null,
+    };
   }
 
   function connectedGroups(size, diagonal = false, requireCover = false, coverPlots = [], requireLine = false, blockedAdjacentKeys = []) {
@@ -678,6 +812,7 @@
     if (state.currentAction.step === "water") {
       const count = waterCount(action);
       const connectedHint = isConnectedWater(action.water) ? "，水格必须正交连通" : "";
+      const disconnectedHint = isDisconnectedWater(action.water) ? "，两个水不能正交相邻（对角相邻可以）" : "";
       const constraints = waterConstraints(action);
       const constraintHint = constraints.length ? `，带${constraints.map((c) => plotListLabel(c.coverPlots)).join("、")}图标的水格必须覆盖对应图标` : "";
       return {
@@ -688,7 +823,7 @@
         cubeKind: "water",
         canSubmitEmpty: count === 0,
         waterConstraints: constraints,
-        validationHint: `选择 ${count} 个未占用格${connectedHint || `，形状可旋转或翻面${constraintHint}`}。`,
+        validationHint: `选择 ${count} 个未占用格${connectedHint || disconnectedHint || `，形状可旋转或翻面${constraintHint}`}。`,
       };
     }
     if (state.currentAction.step === "choice") {
@@ -766,6 +901,10 @@
     return !Array.isArray(water) && Boolean(water?.connected);
   }
 
+  function isDisconnectedWater(water) {
+    return !Array.isArray(water) && Boolean(water?.disconnected);
+  }
+
   function plotListLabel(plots) {
     return plots.map((plot) => ICONS[plot] || plot).join("或");
   }
@@ -801,6 +940,17 @@
     if (submitted.length !== expected) {
       state.currentAction.validationError = `需要选择 ${expected} 个格子，当前选择了 ${submitted.length} 个。`;
       return getPublicState();
+    }
+    if (state.currentAction.step === "water" && isDisconnectedWater(currentSide().water)) {
+      const actual = submitted.map((cell) => getCell(cell.x, cell.y));
+      if (actual.some((cell) => !cell || cell.cube)) {
+        state.currentAction.validationError = "水只能放在未占用的花园格。";
+        return getPublicState();
+      }
+      if (Math.abs(submitted[0].x - submitted[1].x) + Math.abs(submitted[0].y - submitted[1].y) === 1) {
+        state.currentAction.validationError = "两个水不能正交相邻（对角相邻可以）。";
+        return getPublicState();
+      }
     }
     ensureCurrentActionRotKeys();
     if (state.currentAction.step === "rot" && touchesSameActionRot(submitted, state.currentAction.rotKeys)) {
@@ -999,7 +1149,7 @@
     const triggered = new Set(cells.map((c) => c.plot));
     for (const cell of cells) {
       const marks = state.cardMarks[cell.card.instanceId] || {};
-      marks[cell.y] = true;
+      marks[`${cell.localX},${cell.y}`] = true;
       state.cardMarks[cell.card.instanceId] = marks;
       if (cell.plot === "blossom") gain("blossom", 1, "浇水花朵");
       if (cell.plot === "sun") gain("sun", 1, "浇水阳光");
@@ -1025,8 +1175,10 @@
       gain("blossom", n * 2, "蝴蝶增强花朵");
     }
     if (triggered.has("dragonfly")) {
-      const n = cells.filter((c) => c.plot === "empty").length;
-      gain("blossom", n, "蜻蜓增强空地");
+      const amount = cells
+        .filter((c) => c.plot === "empty")
+        .reduce((sum, cell) => sum + (cell.upgraded ? 2 : 1), 0);
+      gain("blossom", amount, "蜻蜓增强空地");
     }
     if (triggered.has("crane")) {
       gain("blossom", cells.filter((c) => c.plot === "blossom").length, "鹤");
@@ -1155,11 +1307,10 @@
   }
 
   function teaComplete(card) {
-    const def = gardenById[card.defId];
-    const side = card.upgraded ? def.back : def.front;
-    const teaRows = side.map((p, i) => p === "tea" ? i : -1).filter((i) => i >= 0);
+    const side = layoutSide(card);
+    const teaKeys = side.plots.filter((entry) => entry.type === "tea").map((entry) => `${entry.x},${entry.y}`);
     const marks = state.cardMarks[card.instanceId] || {};
-    return teaRows.length > 1 && teaRows.every((row) => marks[row]);
+    return teaKeys.length > 1 && teaKeys.every((key) => marks[key]);
   }
 
   function hasUncovered(plot) {
@@ -1246,7 +1397,7 @@
   }
 
   function replant() {
-    if (state.phase !== "action" || state.usedReplant) return getPublicState();
+    if (!canReplantNow()) return getPublicState();
     pushHistory();
     state.gardenDeck = shuffle([...state.gardenDeck, ...state.garden]);
     state.garden = [];
@@ -1255,6 +1406,18 @@
     state.usedReplant = true;
     log("本年已使用 Replant 重新布置花园。", "garden");
     return getPublicState();
+  }
+
+  function canReplantNow() {
+    const remainingActionCards = (state?.actionPiles || []).reduce((sum, pile) => sum + pile.length, 0);
+    return Boolean(
+      state
+      && state.phase === "action"
+      && !state.usedReplant
+      && !state.currentAction
+      && remainingActionCards === ACTION_PAIRS.length
+      && state.actionDiscard.length === 0
+    );
   }
 
   function enterEndgame() {
@@ -1283,19 +1446,117 @@
     return JSON.stringify({ state, nextInstance, history, rngState: rng?.getState?.() || null });
   }
 
-  function load(serialized) {
-    const payload = JSON.parse(serialized);
-    state = payload.state;
-    ensureStateShape();
-    if (state.currentAction) {
-      state.currentAction.rotKeys = Array.isArray(state.currentAction.rotKeys) ? state.currentAction.rotKeys : [];
-      state.currentAction.rotReductions = state.currentAction.rotReductions || {};
+  function validateSave(serialized) {
+    parseSavePayload(serialized);
+    return true;
+  }
+
+  function parseSavePayload(serialized) {
+    if (typeof serialized !== "string") throw new Error("游戏存档必须是 JSON 文本");
+    let payload;
+    try {
+      payload = JSON.parse(serialized);
+    } catch (_error) {
+      throw new Error("游戏状态不是有效的 JSON");
     }
-    nextInstance = payload.nextInstance || 1;
-    history = payload.history || [];
-    rng = createRng(state.seed || 1);
-    if (payload.rngState) rng.setState(payload.rngState);
-    return getPublicState();
+    assertSaveObject(payload, "游戏存档结构无效");
+    validateSavedState(payload.state);
+    if (payload.nextInstance !== undefined) assertSaveNumber(payload.nextInstance, "卡牌编号无效", 1);
+    if (payload.rngState !== undefined && payload.rngState !== null) assertSaveNumber(payload.rngState, "随机数状态无效", 0);
+    if (payload.history !== undefined) {
+      if (!Array.isArray(payload.history)) throw new Error("撤销历史无效");
+      for (const snapshot of payload.history) validateHistorySnapshot(snapshot);
+    }
+    return payload;
+  }
+
+  function validateHistorySnapshot(snapshot) {
+    if (typeof snapshot !== "string") throw new Error("撤销历史条目无效");
+    let payload;
+    try {
+      payload = JSON.parse(snapshot);
+    } catch (_error) {
+      throw new Error("撤销历史包含损坏数据");
+    }
+    assertSaveObject(payload, "撤销历史条目无效");
+    validateSavedState(payload.state);
+    if (payload.nextInstance !== undefined) assertSaveNumber(payload.nextInstance, "撤销历史卡牌编号无效", 1);
+    if (payload.rngState !== undefined && payload.rngState !== null) assertSaveNumber(payload.rngState, "撤销历史随机数状态无效", 0);
+  }
+
+  function validateSavedState(candidate) {
+    assertSaveObject(candidate, "缺少游戏状态");
+    assertSaveNumber(candidate.seed, "随机种子无效", 1);
+    assertSaveNumber(candidate.year, "年份无效", 1);
+    if (!["action", "upgrade", "endgame-upgrade", "gameover"].includes(candidate.phase)) throw new Error("游戏阶段无效");
+    assertSaveObject(candidate.resources, "资源状态无效");
+    for (const kind of ["blossom", "sun", "resiliency", "vp"]) assertSaveNumber(candidate.resources[kind], `${kind} 资源无效`, 0);
+    for (const key of ["garden", "gardenDeck", "expansionDeck", "expansionOffer"]) {
+      if (!Array.isArray(candidate[key])) throw new Error(`${key} 牌组无效`);
+      candidate[key].forEach(validateGardenCard);
+    }
+    if (!Array.isArray(candidate.actionPiles) || candidate.actionPiles.length !== 2 || candidate.actionPiles.some((pile) => !Array.isArray(pile))) {
+      throw new Error("行动牌堆无效");
+    }
+    candidate.actionPiles.flat().forEach(validateActionCard);
+    if (!Array.isArray(candidate.actionDiscard)) throw new Error("行动弃牌堆无效");
+    candidate.actionDiscard.forEach(validateActionCard);
+    if (!Array.isArray(candidate.log)) throw new Error("游戏日志无效");
+    if (candidate.currentAction !== null && candidate.currentAction !== undefined) {
+      assertSaveObject(candidate.currentAction, "当前行动无效");
+      validateActionCard(candidate.currentAction.card);
+      if (!["water", "rot", "choice", "lantern"].includes(candidate.currentAction.step)) throw new Error("当前行动阶段无效");
+    }
+    if (candidate.cubes !== undefined) assertSaveObject(candidate.cubes, "指示物状态无效");
+    if (candidate.cubeRounds !== undefined) assertSaveObject(candidate.cubeRounds, "指示物轮次无效");
+    if (candidate.cardMarks !== undefined) assertSaveObject(candidate.cardMarks, "卡牌标记无效");
+    if (candidate.result !== null && candidate.result !== undefined && !["win", "lose"].includes(candidate.result)) throw new Error("游戏结果无效");
+  }
+
+  function validateGardenCard(card) {
+    assertSaveObject(card, "花园牌数据无效");
+    if (typeof card.instanceId !== "string" || !card.instanceId) throw new Error("花园牌实例编号无效");
+    if (typeof card.defId !== "string" || !gardenById[card.defId]) throw new Error("花园牌定义不存在");
+    if (typeof card.upgraded !== "boolean") throw new Error("花园牌升级状态无效");
+  }
+
+  function validateActionCard(card) {
+    assertSaveObject(card, "行动牌数据无效");
+    const pairDef = ACTION_PAIRS.find((pairDef) => pairDef.id === card.pairId);
+    if (!pairDef || !pairDef.sides.some((sideDef) => sideDef.id === card.sideId)) throw new Error("行动牌定义不存在");
+  }
+
+  function assertSaveObject(value, message) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(message);
+  }
+
+  function assertSaveNumber(value, message, minimum) {
+    if (!Number.isFinite(value) || value < minimum) throw new Error(message);
+  }
+
+  function load(serialized) {
+    const payload = parseSavePayload(serialized);
+    const nextState = payload.state;
+    const nextCardInstance = payload.nextInstance || 1;
+    const nextHistory = payload.history || [];
+    const nextRng = createRng(nextState.seed || 1);
+    if (payload.rngState) nextRng.setState(payload.rngState);
+    ensureStateShape(nextState);
+
+    const previous = { state, nextInstance, history, rng };
+    try {
+      state = nextState;
+      nextInstance = nextCardInstance;
+      history = nextHistory;
+      rng = nextRng;
+      return getPublicState();
+    } catch (error) {
+      state = previous.state;
+      nextInstance = previous.nextInstance;
+      history = previous.history;
+      rng = previous.rng;
+      throw error;
+    }
   }
 
   function undo() {
@@ -1306,13 +1567,17 @@
 
   function getPublicState() {
     if (!state) newGame();
-    const garden = state.garden.map((card, x) => {
+    const garden = gardenPlacements().map(({ card, cardIndex, startX, columns, side }) => {
       const def = gardenById[card.defId];
       return {
         ...publicGardenCardBase(card, def),
         image: cardImage(card.upgraded ? def.backPage : def.frontPage),
-        plots: [0, 1, 2, 3].map((y) => {
-          const cell = getCell(x, y);
+        cardIndex,
+        columnStart: startX,
+        columnEnd: startX + columns - 1,
+        columns,
+        plots: side.plots.map((entry) => {
+          const cell = getCell(startX + entry.x, entry.y);
           return { ...simpleCell(cell), icon: ICONS[cell.plot] || cell.plot };
         }),
       };
@@ -1370,6 +1635,7 @@
       year: state.year,
       phase: state.phase,
       resources: state.resources,
+      tracks: trackTextState(state),
       score: currentScore(),
       milestone: milestone(),
       garden,
@@ -1384,6 +1650,7 @@
       log: state.log,
       result: state.result,
       usedReplant: state.usedReplant,
+      canReplant: canReplantNow(),
     });
   }
 
@@ -1395,13 +1662,13 @@
       year: s.year,
       resources: s.resources,
       milestone: s.milestone,
-      gardenColumns: s.garden.length,
-      tracks: trackTextState(s),
+      gardenColumns: gardenWidth(),
+      tracks: s.tracks,
       garden: s.garden.map((card, x) => ({
         x,
         card: card.name,
         upgraded: card.upgraded,
-        plots: card.plots.map((p) => ({ y: p.y, plot: p.plot, cube: p.cube, cubeRound: p.cubeRound })),
+        plots: card.plots.map((p) => ({ y: p.y, plot: p.plot, upgraded: p.upgraded, cube: p.cube, cubeRound: p.cubeRound })),
       })),
       actionPiles: s.actionPiles.map((pile) => pile[0]?.page || null),
       currentAction: s.currentAction ? {
@@ -1431,9 +1698,16 @@
     const blossom = Math.max(0, Number(s.resources.blossom) || 0);
     const sun = Math.min(10, Math.max(0, Number(s.resources.sun) || 0));
     const blossomDisplay = blossom > 10 ? "10+" : String(blossom);
+    const blossomMarkers = blossomTrackMarkers(blossom);
     return {
       year: { value: year, displayValue: String(year), cell: `year-${year}` },
-      blossom: { value: blossom, displayValue: blossomDisplay, cell: `blossom-${blossomDisplay}` },
+      blossom: {
+        value: blossom,
+        displayValue: blossomDisplay,
+        cell: `blossom-${blossomDisplay}`,
+        cells: blossomMarkers.map((marker) => marker.cell),
+        markers: blossomMarkers,
+      },
       sun: {
         value: sun,
         displayValue: String(sun),
@@ -1441,6 +1715,25 @@
         rewardsReached: SUN_GARDEN_REWARD_THRESHOLDS.filter((threshold) => sun >= threshold),
       },
     };
+  }
+
+  function blossomTrackMarkers(value) {
+    if (value <= 10) {
+      return [{ id: "current", role: "current", index: 0, slotValue: value, displayValue: String(value), cell: `blossom-${value}` }];
+    }
+    const bankedCount = Math.floor((value - 1) / 10);
+    const currentValue = ((value - 1) % 10) + 1;
+    return [
+      ...Array.from({ length: bankedCount }, (_, index) => ({
+        id: `bank-${index + 1}`,
+        role: "banked",
+        index,
+        slotValue: 11,
+        displayValue: "10+",
+        cell: "blossom-10+",
+      })),
+      { id: "current", role: "current", index: 0, slotValue: currentValue, displayValue: String(currentValue), cell: `blossom-${currentValue}` },
+    ];
   }
 
   window.AleasGarden = {
@@ -1463,7 +1756,14 @@
     replant,
     undo,
     getCatalog,
+    validateGardenLayouts,
+    migrateGardenLayouts,
+    getGardenLayouts,
+    getDefaultGardenLayouts,
+    setGardenLayouts,
+    installGardenLayouts,
     serialize,
+    validateSave,
     load,
   };
   window.render_game_to_text = renderGameToText;

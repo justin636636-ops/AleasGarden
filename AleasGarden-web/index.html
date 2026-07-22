@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Alea's Garden - 单人离线版</title>
-  <link rel="stylesheet" href="src/styles.css?v=26-07-05-19-43">
+  <link rel="stylesheet" href="src/styles.css?v=26-07-18-16-50">
 </head>
 <body>
   <canvas id="automationCanvas" aria-hidden="true"></canvas>
@@ -12,10 +12,11 @@
     <header class="topbar">
       <div class="brand">
         <h1><span>Alea's Garden</span><small>单人离线 HTML 版</small></h1>
-        <span class="version-badge" aria-label="版本号">v26-07-05-19-43</span>
+        <span class="version-badge" aria-label="版本号">v26-07-18-16-50</span>
         <p id="statusText">在 5 年内经营花园，终局达到 25 分即胜利。</p>
       </div>
-      <form class="toolbar" autocomplete="off">
+      <button id="mobileMenuBtn" class="mobile-menu-btn" type="button" aria-controls="topToolbar" aria-expanded="false">菜单</button>
+      <form id="topToolbar" class="toolbar" autocomplete="off">
         <label>
           <span>随机种子</span>
           <input id="seedInput" type="number" min="1" max="4294967295" step="1" placeholder="随机">
@@ -23,6 +24,9 @@
         <button id="newGameBtn" class="primary" type="button">新游戏</button>
         <button id="undoBtn" type="button">撤销</button>
         <button id="clearSaveBtn" type="button">清除存档</button>
+        <button id="importSaveBtn" type="button">导入存档</button>
+        <button id="exportSaveBtn" type="button">导出存档</button>
+        <input id="importSaveInput" type="file" accept=".json,application/json" hidden>
         <button id="themeToggleBtn" type="button" aria-pressed="false">深色</button>
         <button id="rulesBtn" type="button">规则</button>
         <button id="catalogBtn" type="button">图鉴</button>
@@ -54,9 +58,9 @@
           <div class="track-scroll">
             <div class="track-board">
               <img src="assets/cards/track-board.jpg?v=tracks-compact-1" alt="年份、花朵和阳光轨道">
-              <span id="yearMarker" class="track-marker year" aria-label="年份标记"></span>
-              <span id="blossomMarker" class="track-marker blossom" aria-label="花朵标记"></span>
-              <span id="sunMarker" class="track-marker sun" aria-label="阳光标记"></span>
+              <span id="yearMarker" class="track-marker year" data-track-marker="year" aria-label="年份标记"></span>
+              <span id="blossomMarker" class="track-marker blossom" data-track-marker="blossom" aria-label="花朵标记"></span>
+              <span id="sunMarker" class="track-marker sun" data-track-marker="sun" aria-label="阳光标记"></span>
             </div>
           </div>
         </section>
@@ -175,7 +179,24 @@
         <h2>图鉴</h2>
         <p class="card-detail-meta">全部花园牌、行动牌与规则书 Appendix 效果说明</p>
       </div>
-      <button id="closeCatalogBtn" type="button">关闭</button>
+      <div class="catalog-head-actions">
+        <button id="catalogEditLayoutsBtn" type="button" aria-pressed="false">编辑布局</button>
+        <label class="catalog-marks-toggle" for="catalogMarksToggle">
+          <input id="catalogMarksToggle" type="checkbox" role="switch" aria-controls="catalogGardenPanel catalogActionPanel">
+          <span>显示程序标记</span>
+        </label>
+        <button id="closeCatalogBtn" type="button">关闭</button>
+      </div>
+    </div>
+    <div id="catalogLayoutTools" class="catalog-layout-tools" hidden>
+      <strong id="catalogLayoutStatus">编辑会自动保存，并从下一局开始生效</strong>
+      <span class="catalog-layout-tools-actions">
+        <button id="undoLayoutBtn" type="button" disabled>撤销修改</button>
+        <button id="resetAllLayoutsBtn" type="button">重置全部</button>
+        <button id="exportLayoutsBtn" type="button">导出 JSON</button>
+        <button id="importLayoutsBtn" type="button">导入 JSON</button>
+        <input id="importLayoutsInput" type="file" accept="application/json,.json" hidden>
+      </span>
     </div>
     <div class="catalog-tabs" role="tablist" aria-label="图鉴分类">
       <button id="catalogGardenTab" class="catalog-tab is-active" type="button" data-catalog-tab="garden" role="tab" aria-selected="true">花园牌</button>
@@ -204,13 +225,48 @@
       <button id="closeCardBtn" type="button">关闭</button>
     </div>
     <div id="cardDetailImages" class="card-detail-images"></div>
+    <section id="layoutEditorPanel" class="layout-editor-panel" hidden aria-label="花园布局编辑器">
+      <div>
+        <h3>编辑程序地块</h3>
+        <p id="layoutEditorSelection">请点击原图上的格子。</p>
+      </div>
+      <label>地块类型
+        <select id="layoutPlotTypeSelect">
+          <option value="none">无地块</option>
+          <option value="empty">普通空地</option>
+          <option value="empty-upgraded">升级空地</option>
+          <option value="blossom">花</option>
+          <option value="sun">太阳</option>
+          <option value="pine">松树</option>
+          <option value="mitsudomoe">三巴</option>
+          <option value="mushroom">蘑菇</option>
+          <option value="chidori">千鸟</option>
+          <option value="parasol">阳伞</option>
+          <option value="raked">枯山水</option>
+          <option value="spring">春风</option>
+          <option value="tea">茶</option>
+          <option value="butterflies">蝴蝶</option>
+          <option value="dragonfly">蜻蜓</option>
+          <option value="crane">鹤</option>
+          <option value="koi">鲤鱼</option>
+          <option value="bridge">桥</option>
+          <option value="mist">雾</option>
+          <option value="lotus">莲</option>
+          <option value="treasure">宝结</option>
+          <option value="lantern">灯笼</option>
+        </select>
+      </label>
+      <label class="layout-golden-toggle"><input id="layoutGoldenToggle" type="checkbox"> 金色地块</label>
+      <button id="resetLayoutFaceBtn" type="button">重置当前牌面</button>
+    </section>
     <section class="card-effects" aria-label="效果解释">
       <h3>效果解释</h3>
       <ul id="cardEffectList" class="effect-list"></ul>
     </section>
   </dialog>
 
-  <script src="src/game.js?v=26-07-05-19-43"></script>
-  <script src="src/app.js?v=26-07-05-19-43"></script>
+  <script src="src/garden-layout-data.js?v=26-07-18-16-50"></script>
+  <script src="src/game.js?v=26-07-18-16-50"></script>
+  <script src="src/app.js?v=26-07-18-16-50"></script>
 </body>
 </html>

@@ -6,11 +6,61 @@
     "endgame-upgrade": "终局升级",
     gameover: "结束",
   };
-  const slotLeft = 17.8;
+  const slotLefts = [17.8, 50.0, 82.2];
   const slotTops = [13.0, 34.7, 58.0, 81.3];
+  const plotMarkLabels = {
+    empty: "普空",
+    upgradedEmpty: "升空",
+    blossom: "花",
+    sun: "日",
+    pine: "松",
+    mitsudomoe: "巴",
+    mushroom: "菇",
+    chidori: "千",
+    parasol: "伞",
+    raked: "砂",
+    spring: "风",
+    tea: "茶",
+    butterflies: "蝶",
+    dragonfly: "蜓",
+    crane: "鹤",
+    koi: "鲤",
+    bridge: "桥",
+    mist: "雾",
+    lotus: "莲",
+    treasure: "结",
+    lantern: "灯",
+  };
+  const plotMarkIcons = {
+    empty: "□",
+    upgradedEmpty: "■",
+    blossom: "✿",
+    sun: "☀",
+    pine: "♠",
+    mitsudomoe: "巴",
+    mushroom: "菇",
+    chidori: "千",
+    parasol: "伞",
+    raked: "砂",
+    spring: "风",
+    tea: "茶",
+    butterflies: "蝶",
+    dragonfly: "蜓",
+    crane: "鹤",
+    koi: "鲤",
+    bridge: "桥",
+    mist: "雾",
+    lotus: "莲",
+    treasure: "结",
+    lantern: "灯",
+  };
+  const resourceMarkLabels = { blossom: "花", sun: "日", resiliency: "韧", vp: "分" };
   const themeStorageKey = "aleasGardenTheme";
   const saveStorageKey = "aleasGardenSaveV1";
-  const saveVersion = 1;
+  const saveVersion = 2;
+  const saveFileFormat = "aleas-garden-save";
+  const activeLayoutsStorageKey = "aleasGardenLayoutsActiveV1";
+  const draftLayoutsStorageKey = "aleasGardenLayoutsDraftV1";
   const gardenLabelNames = {
     "Garden Extension": "扩展",
     Mitsudomoe: "三巴",
@@ -50,10 +100,17 @@
   let statusFlash = "";
   let statusFlashTimer = 0;
   let previousGardenIds = null;
+  let catalogMarksVisible = false;
+  let catalogLayoutEditing = false;
+  let layoutDraft = null;
+  let layoutUndoStack = [];
+  let selectedLayoutCell = null;
+  let openGardenCardId = null;
   const trackMarkerTimers = {};
 
   function init() {
     initTheme();
+    loadStoredLayouts();
     sizeAutomationCanvas();
     bind();
     const seed = new URLSearchParams(location.search).get("seed");
@@ -62,8 +119,9 @@
       window.AleasGarden.newGame({ seed });
       saveGame("已按链接种子开新局并保存。");
     } else if (!restoreSavedGame()) {
+      const incompatible = window.__aleaSaveStatus?.message === "存档版本不兼容。";
       window.AleasGarden.newGame({ seed: $("seedInput").value });
-      saveGame("新局已保存。");
+      saveGame(incompatible ? "旧版存档与多列布局不兼容，已开始新局。" : "新局已保存。");
     }
     clearTemp();
     resetGardenAnimationSnapshot();
@@ -71,13 +129,28 @@
   }
 
   function bind() {
-    window.addEventListener("resize", sizeAutomationCanvas);
+    window.addEventListener("resize", () => {
+      sizeAutomationCanvas();
+      if (!window.matchMedia("(max-width: 640px) and (orientation: portrait)").matches) setMobileMenu(false);
+    });
+    $("mobileMenuBtn").addEventListener("click", (event) => {
+      event.stopPropagation();
+      setMobileMenu(!$("topToolbar").classList.contains("is-open"));
+    });
+    $("topToolbar").addEventListener("click", (event) => {
+      if (event.target instanceof Element && event.target.closest("button")) setMobileMenu(false);
+    });
+    document.addEventListener("click", (event) => {
+      const topbar = document.querySelector(".topbar");
+      if (topbar && event.target instanceof Node && !topbar.contains(event.target)) setMobileMenu(false);
+    });
     $("themeToggleBtn").addEventListener("click", () => {
       const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
       setTheme(next, true);
     });
     $("newGameBtn").addEventListener("click", () => {
-      window.AleasGarden.newGame({ seed: $("seedInput").value });
+      promoteLayoutDraft();
+      window.AleasGarden.newGame();
       $("seedInput").value = window.AleasGarden.getState().seed;
       clearTemp();
       resetTrackMarkers();
@@ -141,12 +214,29 @@
       clearSavedGame();
       render();
     });
+    $("importSaveBtn").addEventListener("click", () => $("importSaveInput").click());
+    $("importSaveInput").addEventListener("change", importSavedGame);
+    $("exportSaveBtn").addEventListener("click", exportSavedGame);
     $("rulesBtn").addEventListener("click", () => $("rulesDialog").showModal());
     $("closeRulesBtn").addEventListener("click", () => $("rulesDialog").close());
     $("catalogBtn").addEventListener("click", () => {
       renderCatalog();
+      syncCatalogMarksVisibility();
       $("catalogDialog").showModal();
     });
+    $("catalogMarksToggle").addEventListener("change", (event) => {
+      catalogMarksVisible = Boolean(event.currentTarget.checked);
+      syncCatalogMarksVisibility();
+    });
+    $("catalogEditLayoutsBtn").addEventListener("click", toggleLayoutEditor);
+    $("undoLayoutBtn").addEventListener("click", undoLayoutEdit);
+    $("resetAllLayoutsBtn").addEventListener("click", resetAllLayouts);
+    $("exportLayoutsBtn").addEventListener("click", exportLayouts);
+    $("importLayoutsBtn").addEventListener("click", () => $("importLayoutsInput").click());
+    $("importLayoutsInput").addEventListener("change", importLayouts);
+    $("layoutPlotTypeSelect").addEventListener("change", applySelectedLayoutCell);
+    $("layoutGoldenToggle").addEventListener("change", applySelectedLayoutCell);
+    $("resetLayoutFaceBtn").addEventListener("click", resetSelectedLayoutFace);
     $("closeCatalogBtn").addEventListener("click", () => $("catalogDialog").close());
     document.querySelectorAll(".catalog-tab").forEach((button) => {
       button.addEventListener("click", () => setCatalogTab(button.dataset.catalogTab));
@@ -178,8 +268,18 @@
     $("closeLogBtn").addEventListener("click", () => $("logDialog").close());
     $("closeCardBtn").addEventListener("click", () => $("cardDialog").close());
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && $("cardDialog").open) $("cardDialog").close();
+      if (event.key !== "Escape") return;
+      if ($("cardDialog").open) $("cardDialog").close();
+      setMobileMenu(false);
     });
+  }
+
+  function setMobileMenu(open) {
+    const toolbar = $("topToolbar");
+    const button = $("mobileMenuBtn");
+    if (!toolbar || !button) return;
+    toolbar.classList.toggle("is-open", Boolean(open));
+    button.setAttribute("aria-expanded", String(Boolean(open)));
   }
 
   function initTheme() {
@@ -228,6 +328,67 @@
     button.textContent = isDark ? "浅色" : "深色";
     button.setAttribute("aria-pressed", String(isDark));
     button.setAttribute("title", isDark ? "切换到浅色模式" : "切换到深色模式");
+  }
+
+  function cloneData(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function readLayoutStorage(key) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      const migrated = window.AleasGarden.migrateGardenLayouts(parsed);
+      if (JSON.stringify(parsed) !== JSON.stringify(migrated)) localStorage.setItem(key, JSON.stringify(migrated));
+      return migrated;
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  function loadStoredLayouts() {
+    const active = readLayoutStorage(activeLayoutsStorageKey) || window.AleasGarden.getDefaultGardenLayouts();
+    window.AleasGarden.installGardenLayouts(active);
+    layoutDraft = readLayoutStorage(draftLayoutsStorageKey);
+    updateLayoutStatus();
+  }
+
+  function saveLayoutDraft(next, pushUndo = true) {
+    window.AleasGarden.validateGardenLayouts(next);
+    if (pushUndo) layoutUndoStack.push(cloneData(layoutDraft || window.AleasGarden.getGardenLayouts()));
+    const matchesActive = JSON.stringify(next) === JSON.stringify(window.AleasGarden.getGardenLayouts());
+    layoutDraft = matchesActive ? null : cloneData(next);
+    try {
+      if (layoutDraft) localStorage.setItem(draftLayoutsStorageKey, JSON.stringify(layoutDraft));
+      else localStorage.removeItem(draftLayoutsStorageKey);
+    } catch (_error) {
+      flashStatus("布局已修改，但浏览器无法保存草稿。");
+    }
+    updateLayoutStatus(layoutDraft ? "布局草稿已自动保存，下一局生效。" : "修改已撤销，当前没有待生效草稿。");
+  }
+
+  function promoteLayoutDraft() {
+    if (!layoutDraft) return false;
+    window.AleasGarden.installGardenLayouts(layoutDraft);
+    try {
+      localStorage.setItem(activeLayoutsStorageKey, JSON.stringify(layoutDraft));
+      localStorage.removeItem(draftLayoutsStorageKey);
+    } catch (_error) {
+      flashStatus("布局已用于本次新游戏，但无法持久保存。");
+    }
+    layoutDraft = null;
+    layoutUndoStack = [];
+    selectedLayoutCell = null;
+    updateLayoutStatus("布局草稿已应用到新游戏。");
+    return true;
+  }
+
+  function updateLayoutStatus(message = "") {
+    const status = $("catalogLayoutStatus");
+    if (status) status.textContent = message || (layoutDraft ? "有布局草稿：下一局生效" : "当前没有待生效的布局修改");
+    const undo = $("undoLayoutBtn");
+    if (undo) undo.disabled = !layoutUndoStack.length;
   }
 
   function restoreSavedGame() {
@@ -298,6 +459,92 @@
     }
   }
 
+  function exportSavedGame() {
+    try {
+      const now = new Date();
+      const archive = {
+        format: saveFileFormat,
+        version: saveVersion,
+        exportedAt: now.toISOString(),
+        game: JSON.parse(window.AleasGarden.serialize()),
+      };
+      const blob = new Blob([`${JSON.stringify(archive, null, 2)}\n`], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `aleas-garden-save-${fileTimestamp(now)}.json`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+      flashStatus("存档已导出为 JSON 文件。");
+      render();
+    } catch (_error) {
+      flashStatus("导出存档失败，当前游戏未更改。");
+      render();
+    }
+  }
+
+  async function importSavedGame(event) {
+    const input = event.currentTarget;
+    const file = input.files?.[0];
+    if (!file) return;
+    try {
+      const serialized = parseSaveArchive(await file.text());
+      const confirmed = window.confirm("导入会覆盖当前游戏，是否继续？");
+      if (!confirmed) {
+        flashStatus("已取消导入，当前游戏未更改。");
+        render();
+        return;
+      }
+      window.AleasGarden.load(serialized);
+      clearTemp();
+      resetTrackMarkers();
+      resetGardenAnimationSnapshot();
+      saveGame("存档已导入并保存。");
+      render();
+    } catch (error) {
+      const detail = error instanceof Error && error.message ? `：${error.message}` : "";
+      flashStatus(`导入存档失败${detail}`);
+      render();
+    } finally {
+      input.value = "";
+    }
+  }
+
+  function parseSaveArchive(text) {
+    let archive;
+    try {
+      archive = JSON.parse(text);
+    } catch (_error) {
+      throw new Error("文件不是有效的 JSON");
+    }
+    if (!archive || typeof archive !== "object" || Array.isArray(archive)) throw new Error("存档包结构无效");
+    if (archive.format !== saveFileFormat) throw new Error("不是 Alea's Garden 存档文件");
+    if (archive.version !== saveVersion) throw new Error("存档版本不兼容");
+    if (!archive.game || typeof archive.game !== "object" || Array.isArray(archive.game)) throw new Error("缺少游戏状态");
+    const serialized = JSON.stringify(archive.game);
+    window.AleasGarden.validateSave(serialized);
+    return serialized;
+  }
+
+  function fileTimestamp(date) {
+    const pad = (value) => String(value).padStart(2, "0");
+    return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}-${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}`;
+  }
+
+  function downloadJson(value, filename) {
+    const blob = new Blob([`${JSON.stringify(value, null, 2)}\n`], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+  }
+
   function flashStatus(message) {
     statusFlash = message;
     clearTimeout(statusFlashTimer);
@@ -362,17 +609,38 @@
   function renderResourceTrack(s) {
     const markers = trackMarkerData(s);
     window.__aleaTrackState = markers;
+    const board = document.querySelector(".track-board");
+    const activeIds = new Set(markers.map((marker) => marker.elementId));
+    board?.querySelectorAll('[data-dynamic-track-marker="true"]').forEach((el) => {
+      if (activeIds.has(el.id)) return;
+      clearTimeout(trackMarkerTimers[el.id]);
+      delete trackMarkerTimers[el.id];
+      el.remove();
+    });
     for (const marker of markers) {
-      const el = $(`${marker.kind}Marker`);
+      let el = $(marker.elementId);
+      const isNew = !el;
+      if (!el && board) {
+        el = document.createElement("span");
+        el.id = marker.elementId;
+        el.className = `track-marker ${marker.kind}`;
+        el.dataset.trackMarker = marker.kind;
+        el.dataset.dynamicTrackMarker = "true";
+        board.appendChild(el);
+      }
       if (!el) continue;
       const changed = el.dataset.cell && el.dataset.cell !== marker.cell;
       el.style.setProperty("--marker-x", `${marker.x}%`);
       el.style.setProperty("--marker-y", `${marker.y}%`);
+      el.style.setProperty("--marker-offset-x", `${marker.offsetX || 0}px`);
+      el.style.setProperty("--marker-offset-y", `${marker.offsetY || 0}px`);
+      el.style.zIndex = String(2 + (marker.stackIndex || 0));
       el.dataset.cell = marker.cell;
       el.dataset.value = marker.value;
-      el.setAttribute("aria-label", `${marker.label} ${marker.displayValue}`);
-      el.title = `${marker.label} ${marker.displayValue}`;
-      if (trackMarkersReady && changed) pulseTrackMarker(el, marker.kind);
+      el.dataset.markerRole = marker.role || "current";
+      el.setAttribute("aria-label", marker.ariaLabel);
+      el.title = marker.ariaLabel;
+      if (trackMarkersReady && (isNew || changed)) pulseTrackMarker(el, marker.elementId);
     }
     trackMarkersReady = true;
   }
@@ -381,23 +649,50 @@
     const yearValue = Math.min(Math.max(Number(s.year) || 1, 1), 5);
     const blossomValue = Math.max(0, Number(s.resources.blossom) || 0);
     const sunValue = Math.min(10, Math.max(0, Number(s.resources.sun) || 0));
+    const blossomMarkers = s.tracks?.blossom?.markers || localBlossomTrackMarkers(blossomValue);
     return [
-      makeTrackMarker("year", yearValue, yearValue),
-      makeTrackMarker("blossom", blossomValue, blossomValue > 10 ? 11 : blossomValue),
-      makeTrackMarker("sun", sunValue, sunValue),
+      makeTrackMarker("year", yearValue, yearValue, { elementId: "yearMarker" }),
+      ...blossomMarkers.map((marker) => makeTrackMarker("blossom", blossomValue, marker.slotValue, {
+        elementId: marker.role === "current" ? "blossomMarker" : `blossomBankMarker${marker.index + 1}`,
+        displayValue: marker.displayValue,
+        cell: marker.cell,
+        role: marker.role,
+        stackIndex: marker.role === "banked" ? marker.index : 0,
+        ariaLabel: marker.role === "banked"
+          ? `花朵累计十点指示物 ${marker.index + 1}，总计 ${blossomValue}`
+          : (blossomValue > 10 ? `花朵当前区间 ${marker.displayValue}，总计 ${blossomValue}` : `花朵 ${blossomValue}`),
+      })),
+      makeTrackMarker("sun", sunValue, sunValue, { elementId: "sunMarker" }),
     ];
   }
 
-  function makeTrackMarker(kind, value, slotValue) {
+  function localBlossomTrackMarkers(value) {
+    if (value <= 10) return [{ role: "current", index: 0, slotValue: value, displayValue: String(value), cell: `blossom-${value}` }];
+    const bankedCount = Math.floor((value - 1) / 10);
+    const currentValue = ((value - 1) % 10) + 1;
+    return [
+      ...Array.from({ length: bankedCount }, (_, index) => ({ role: "banked", index, slotValue: 11, displayValue: "10+", cell: "blossom-10+" })),
+      { role: "current", index: 0, slotValue: currentValue, displayValue: String(currentValue), cell: `blossom-${currentValue}` },
+    ];
+  }
+
+  function makeTrackMarker(kind, value, slotValue, options = {}) {
     const config = trackSlots[kind];
     const slotIndex = kind === "year" ? slotValue - 1 : slotValue;
-    const displayValue = kind === "blossom" && value > 10 ? "10+" : String(value);
+    const displayValue = options.displayValue || String(value);
+    const stackIndex = options.stackIndex || 0;
     return {
       kind,
       value,
       displayValue,
       label: { year: "年份", blossom: "花朵", sun: "阳光" }[kind],
-      cell: `${kind}-${displayValue}`,
+      elementId: options.elementId || `${kind}Marker`,
+      cell: options.cell || `${kind}-${displayValue}`,
+      role: options.role || "current",
+      stackIndex,
+      offsetX: kind === "blossom" && options.role === "banked" ? -(stackIndex % 4) * 7 : 0,
+      offsetY: kind === "blossom" && options.role === "banked" ? -Math.floor(stackIndex / 4) * 7 : 0,
+      ariaLabel: options.ariaLabel || `${{ year: "年份", blossom: "花朵", sun: "阳光" }[kind]} ${displayValue}`,
       x: config.x[slotIndex],
       y: config.y,
     };
@@ -415,13 +710,12 @@
   function resetTrackMarkers() {
     trackMarkersReady = false;
     Object.values(trackMarkerTimers).forEach(clearTimeout);
-    for (const kind of ["year", "blossom", "sun"]) {
-      const el = $(`${kind}Marker`);
-      if (!el) continue;
+    document.querySelectorAll("[data-track-marker]").forEach((el) => {
       el.classList.remove("is-moving");
       delete el.dataset.cell;
       delete el.dataset.value;
-    }
+      if (el.dataset.dynamicTrackMarker === "true") el.remove();
+    });
   }
 
   function resetGardenAnimationSnapshot() {
@@ -436,7 +730,8 @@
     cards.innerHTML = "";
     const stage = document.createElement("div");
     stage.className = "overlap-stage";
-    stage.style.setProperty("--cols", s.garden.length);
+    const totalColumns = s.garden.reduce((max, card) => Math.max(max, Number(card.columnEnd) + 1), 0);
+    stage.style.setProperty("--cols", totalColumns);
     const labels = document.createElement("div");
     labels.className = "garden-column-labels";
     for (const [index, card] of s.garden.entries()) {
@@ -450,6 +745,10 @@
         el.addEventListener("animationend", () => el.classList.remove("is-entering"), { once: true });
       }
       el.style.zIndex = String(index + 1);
+      if (index > 0) {
+        const previousColumns = s.garden[index - 1].columns || 1;
+        el.style.marginLeft = `calc(var(--garden-step) * ${previousColumns} - var(--garden-card-w))`;
+      }
       const media = document.createElement("div");
       media.className = "card-media";
       media.innerHTML = `<img src="${card.image}" alt="${escapeHtml(card.name)}">`;
@@ -457,7 +756,7 @@
         const slot = document.createElement("button");
         slot.type = "button";
         slot.className = "card-slot";
-        slot.style.left = `${slotLeft}%`;
+        slot.style.left = `${slotLefts[plot.localX] ?? slotLefts[0]}%`;
         slot.style.top = `${slotTops[plot.y]}%`;
         slot.dataset.key = plot.key;
         slot.dataset.x = plot.x;
@@ -467,7 +766,7 @@
         const tempKind = tempKindFor(plot.key, s.currentAction);
         const cubeKind = plot.cube || tempKind;
         const cubeRound = plot.cube ? plot.cubeRound : (tempKind ? currentActionRound(s) : null);
-        slot.setAttribute("aria-label", `${card.name} 第 ${plot.y + 1} 格${cubeKind ? `，${cubeLabel(cubeKind, cubeRound)}` : ""}`);
+        slot.setAttribute("aria-label", `${card.name} 牌内第 ${Number(plot.localX) + 1} 列第 ${plot.y + 1} 行${cubeKind ? `，${cubeLabel(cubeKind, cubeRound)}` : ""}`);
         if (cubeKind) {
           const cube = document.createElement("span");
           cube.className = `cube-marker ${cubeKind} ${tempKind ? "pending" : ""}`;
@@ -481,6 +780,7 @@
 
       const columnControls = document.createElement("div");
       columnControls.className = "garden-column-controls";
+      columnControls.style.setProperty("--card-columns", card.columns || 1);
       if (entering) {
         columnControls.classList.add("is-entering");
         columnControls.style.setProperty("--enter-delay", enterDelay);
@@ -492,8 +792,9 @@
       label.className = "garden-column-label";
       const labelName = gardenLabelName(card.name);
       label.title = card.name;
-      label.setAttribute("aria-label", `第 ${index + 1} 列：${card.name}，${card.upgraded ? `${card.vp} 分` : `${card.cost} 花`}`);
-      label.innerHTML = `<strong>${index + 1}</strong><span>${escapeHtml(labelName)}</span><small>${card.upgraded ? `${card.vp} 分` : `${card.cost} 花`}</small>`;
+      const range = card.columnStart === card.columnEnd ? `${card.columnStart + 1}` : `${card.columnStart + 1}–${card.columnEnd + 1}`;
+      label.setAttribute("aria-label", `全局第 ${range} 列：${card.name}，${card.upgraded ? `${card.vp} 分` : `${card.cost} 花`}`);
+      label.innerHTML = `<strong>${index + 1}</strong><span>${escapeHtml(labelName)}</span><small>列 ${range} · ${card.upgraded ? `${card.vp} 分` : `${card.cost} 花`}</small>`;
       label.addEventListener("click", () => openCardDialog(card));
       columnControls.appendChild(label);
 
@@ -538,24 +839,141 @@
   }
 
   function openCardDialog(card) {
+    const cardId = card.id || card.defId;
+    if (cardId) {
+      openGardenCardId = cardId;
+      card = catalogGardenCards().find((item) => item.id === cardId) || card;
+    }
     const shortName = gardenLabelName(card.name);
     $("cardDialogTitle").textContent = `${shortName} · ${card.name}`;
     $("cardDialogMeta").textContent = `升级费用 ${card.cost} 花 · 升级后 ${card.vp} 分`;
     $("cardDetailImages").innerHTML = [
-      cardFigure("基础面", card.frontImage, `${card.name} 基础面，第 ${card.frontPage} 页`),
-      cardFigure(card.upgraded ? "升级面（当前）" : "升级面", card.backImage, `${card.name} 升级面，第 ${card.backPage} 页`),
+      cardFigure("基础面", card.frontImage, `${card.name} 基础面，第 ${card.frontPage} 页`, `${gardenProgramOverlay(card.frontPlots)}${layoutEditorOverlay(card.id, "front", card.frontPlots)}`),
+      cardFigure(card.upgraded ? "升级面（当前）" : "升级面", card.backImage, `${card.name} 升级面，第 ${card.backPage} 页`, `${gardenProgramOverlay(card.backPlots)}${layoutEditorOverlay(card.id, "back", card.backPlots)}`),
     ].join("");
+    $("cardDetailImages").querySelectorAll(".layout-candidate").forEach((button) => {
+      button.addEventListener("click", () => selectLayoutCell(button.dataset.cardId, button.dataset.side, Number(button.dataset.x), Number(button.dataset.y)));
+    });
     renderCardEffects(card);
-    $("cardDialog").showModal();
+    syncLayoutEditorPanel();
+    syncCatalogMarksVisibility();
+    if (!$("cardDialog").open) $("cardDialog").showModal();
   }
 
-  function cardFigure(title, image, alt) {
+  function cardFigure(title, image, alt, overlay = "") {
     return `
       <figure class="card-detail-figure">
         <figcaption>${escapeHtml(title)}</figcaption>
-        <img src="${image}" alt="${escapeHtml(alt)}">
+        <div class="catalog-image-stack detail-image-stack">
+          <img src="${image}" alt="${escapeHtml(alt)}">
+          ${overlay}
+        </div>
       </figure>
     `;
+  }
+
+  function syncCatalogMarksVisibility() {
+    const toggle = $("catalogMarksToggle");
+    if (toggle) toggle.checked = catalogMarksVisible;
+    $("catalogDialog")?.classList.toggle("show-program-marks", catalogMarksVisible);
+    $("cardDialog")?.classList.toggle("show-program-marks", catalogMarksVisible);
+  }
+
+  function gardenProgramOverlay(plots = []) {
+    const columnCount = Math.max(1, ...plots.map((plot) => Number(plot.localX ?? 0) + 1));
+    const columnClass = columnCount > 1 ? ` is-multi-column columns-${columnCount}` : " is-single-column";
+    const markers = plots.map((plot) => {
+      const key = plot.plot === "empty" && plot.upgraded ? "upgradedEmpty" : (plot.plot || "empty");
+      const label = plotMarkLabels[key] || plot.icon || key;
+      const icon = plotMarkIcons[key] || plot.icon || label;
+      const goldClass = plot.golden ? " is-golden" : "";
+      const upgradedClass = plot.plot === "empty" && plot.upgraded ? " is-upgraded-empty" : "";
+      const gold = plot.golden ? `<span class="program-gold-mark">金</span>` : "";
+      return `
+        <span class="garden-program-mark${goldClass}${upgradedClass}" style="--mark-left:${slotLefts[plot.localX] ?? slotLefts[0]}%;--mark-top:${slotTops[plot.y] ?? 50}%">
+          <span class="program-row-mark">${Number(plot.localX ?? 0) + 1},${Number(plot.y) + 1}</span>
+          <span class="program-plot-icon">${escapeHtml(icon)}</span>
+          <span class="program-plot-label">${escapeHtml(label)}</span>
+          ${gold}
+        </span>
+      `;
+    }).join("");
+    return `<span class="program-overlay garden-program-overlay${columnClass}" aria-hidden="true">${markers}</span>`;
+  }
+
+  function layoutEditorOverlay(cardId, sideName, plots = []) {
+    if (!catalogLayoutEditing || !cardId) return "";
+    const byKey = new Map(plots.map((plot) => [`${plot.localX},${plot.y}`, plot]));
+    const cells = [];
+    for (let y = 0; y < 4; y += 1) {
+      for (let x = 0; x < 3; x += 1) {
+        const plot = byKey.get(`${x},${y}`);
+        const selected = selectedLayoutCell?.cardId === cardId && selectedLayoutCell.side === sideName
+          && selectedLayoutCell.x === x && selectedLayoutCell.y === y;
+        const type = plot?.plot || "none";
+        const displayType = type === "empty" && plot?.upgraded ? "upgradedEmpty" : type;
+        const label = plot ? `${plotMarkIcons[displayType] || plotMarkLabels[displayType] || displayType}${plot.golden ? " 金" : ""}` : "+";
+        cells.push(`<button class="layout-candidate${plot ? " has-plot" : " is-missing"}${plot?.golden ? " is-golden" : ""}${plot?.plot === "empty" && plot.upgraded ? " is-upgraded-empty" : ""}${selected ? " is-selected" : ""}" type="button" data-card-id="${cardId}" data-side="${sideName}" data-x="${x}" data-y="${y}" style="--candidate-left:${slotLefts[x]}%;--candidate-top:${slotTops[y]}%" aria-label="${sideName === "front" ? "基础面" : "升级面"}第 ${x + 1} 列第 ${y + 1} 行：${escapeHtml(plot ? plotMarkLabels[displayType] : "无地块")}"><small>${x + 1},${y + 1}</small>${escapeHtml(label)}</button>`);
+      }
+    }
+    return `<span class="layout-editor-overlay">${cells.join("")}</span>`;
+  }
+
+  function actionProgramOverlay(card) {
+    const water = actionWaterOverlay(card.water);
+    const rot = (card.rot || []).map((requirement, index) => actionRotMark(requirement, index));
+    if (card.flags?.doubleResiliency) rot.push(`<span class="action-program-chip">韧性 ×2</span>`);
+    if (!rot.length) rot.push(`<span class="action-program-chip is-empty">无腐败</span>`);
+    const bonus = Object.entries(card.bonus || {}).map(([kind, amount]) => (
+      `<span class="action-program-chip is-bonus">+${escapeHtml(amount)} ${escapeHtml(resourceMarkLabels[kind] || kind)}</span>`
+    ));
+    if (!bonus.length) bonus.push(`<span class="action-program-chip is-empty">无奖励</span>`);
+    return `
+      <span class="program-overlay action-program-overlay" aria-hidden="true">
+        <span class="action-program-zone action-water-zone"><b>浇水</b>${water}</span>
+        <span class="action-program-zone action-rot-zone"><b>腐败</b><span class="action-program-chips">${rot.join("")}</span></span>
+        <span class="action-program-zone action-bonus-zone"><b>奖励</b><span class="action-program-chips">${bonus.join("")}</span></span>
+      </span>
+    `;
+  }
+
+  function actionWaterOverlay(water) {
+    if (!Array.isArray(water)) {
+      const count = Number(water?.count) || 0;
+      if (water?.disconnected) {
+        const marks = Array.from({ length: count }, () => "<i>水</i>").join("");
+        return `<span class="action-connected-water is-disconnected"><span class="action-disconnected-water-pair">${marks}</span><small>不正交相邻</small></span>`;
+      }
+      return `<span class="action-connected-water">水 ×${count}<small>正交连通</small></span>`;
+    }
+    if (!water.length) return `<span class="action-program-chip is-empty">无浇水</span>`;
+    const points = water.map((point) => Array.isArray(point)
+      ? { x: point[0], y: point[1], coverPlots: [] }
+      : { x: point.x, y: point.y, coverPlots: point.coverPlots || [] });
+    const minX = Math.min(...points.map((point) => point.x));
+    const minY = Math.min(...points.map((point) => point.y));
+    const width = Math.max(...points.map((point) => point.x)) - minX + 1;
+    const height = Math.max(...points.map((point) => point.y)) - minY + 1;
+    const marks = points.map((point) => {
+      const left = ((point.x - minX + 0.5) / width) * 100;
+      const top = ((point.y - minY + 0.5) / height) * 100;
+      const targets = (point.coverPlots || []).map((plot) => plotMarkLabels[plot] || plot).join("/");
+      return `<span class="action-water-point${targets ? " has-target" : ""}" style="left:${left}%;top:${top}%">水${targets ? `<small>${escapeHtml(targets)}</small>` : ""}</span>`;
+    }).join("");
+    return `<span class="action-water-shape" style="--shape-ratio:${width} / ${height}">${marks}</span>`;
+  }
+
+  function actionRotMark(requirement, index) {
+    const count = requirement.milestoneFormula === "fiveMinusCurrent"
+      ? "5−里程碑"
+      : (requirement.milestone ? "6−里程碑" : requirement.count);
+    const flags = [];
+    if (requirement.locked) flags.push("锁");
+    if (requirement.line) flags.push("直线");
+    if (requirement.diagonal) flags.push("对角");
+    if (requirement.cover) flags.push("非空");
+    if (requirement.coverPlots?.length) flags.push(`覆${requirement.coverPlots.map((plot) => plotMarkLabels[plot] || plot).join("/")}`);
+    return `<span class="action-program-chip is-rot"><i>${index + 1}</i>腐 ×${escapeHtml(count)}${flags.length ? `<small>${escapeHtml(flags.join(" · "))}</small>` : ""}</span>`;
   }
 
   function renderCardEffects(card) {
@@ -587,12 +1005,172 @@
     return window.AleasGarden.getCatalog().appendixEffects || {};
   }
 
+  function layoutPlotsForCatalog(side) {
+    return (side?.plots || []).map((entry) => ({
+      localX: entry.x,
+      y: entry.y,
+      plot: entry.type,
+      golden: Boolean(entry.golden),
+      upgraded: Boolean(entry.upgraded),
+      icon: plotMarkIcons[entry.type] || entry.type,
+    }));
+  }
+
+  function catalogGardenCards() {
+    const catalog = window.AleasGarden.getCatalog();
+    const layouts = layoutDraft || window.AleasGarden.getGardenLayouts();
+    return (catalog.gardenCards || []).map((card) => {
+      const layout = layouts.cards[card.id];
+      return {
+        ...card,
+        frontPlots: layoutPlotsForCatalog(layout.front),
+        backPlots: layoutPlotsForCatalog(layout.back),
+        frontColumns: layout.front.columns,
+        backColumns: layout.back.columns,
+      };
+    });
+  }
+
   function renderCatalog() {
     const catalog = window.AleasGarden.getCatalog();
-    renderGardenCatalog(catalog.gardenCards || []);
+    renderGardenCatalog(catalogGardenCards());
     renderActionCatalog(catalog.actionCards || []);
     renderEffectsCatalog(catalog.appendixEffects || {});
     setCatalogTab(document.querySelector(".catalog-tab.is-active")?.dataset.catalogTab || "garden");
+    syncLayoutEditorUi();
+  }
+
+  function toggleLayoutEditor() {
+    catalogLayoutEditing = !catalogLayoutEditing;
+    if (catalogLayoutEditing) {
+      catalogMarksVisible = true;
+      setCatalogTab("garden");
+    } else {
+      selectedLayoutCell = null;
+    }
+    renderCatalog();
+    syncCatalogMarksVisibility();
+    if ($("cardDialog").open && openGardenCardId) openCardDialog({ id: openGardenCardId, name: openGardenCardId });
+  }
+
+  function syncLayoutEditorUi() {
+    const button = $("catalogEditLayoutsBtn");
+    if (button) {
+      button.classList.toggle("is-active", catalogLayoutEditing);
+      button.setAttribute("aria-pressed", String(catalogLayoutEditing));
+      button.textContent = catalogLayoutEditing ? "退出编辑" : "编辑布局";
+    }
+    if ($("catalogLayoutTools")) $("catalogLayoutTools").hidden = !catalogLayoutEditing;
+    $("catalogDialog")?.classList.toggle("is-layout-editing", catalogLayoutEditing);
+    $("cardDialog")?.classList.toggle("is-layout-editing", catalogLayoutEditing);
+    updateLayoutStatus();
+  }
+
+  function selectLayoutCell(cardId, side, x, y) {
+    selectedLayoutCell = { cardId, side, x, y };
+    const card = catalogGardenCards().find((item) => item.id === cardId);
+    if (card) openCardDialog(card);
+  }
+
+  function selectedLayoutEntry(layouts = layoutDraft || window.AleasGarden.getGardenLayouts()) {
+    if (!selectedLayoutCell) return null;
+    const side = layouts.cards?.[selectedLayoutCell.cardId]?.[selectedLayoutCell.side];
+    return side?.plots.find((plot) => plot.x === selectedLayoutCell.x && plot.y === selectedLayoutCell.y) || null;
+  }
+
+  function syncLayoutEditorPanel() {
+    const panel = $("layoutEditorPanel");
+    if (!panel) return;
+    panel.hidden = !catalogLayoutEditing || !openGardenCardId;
+    if (panel.hidden) return;
+    const entry = selectedLayoutEntry();
+    const selection = $("layoutEditorSelection");
+    if (!selectedLayoutCell || selectedLayoutCell.cardId !== openGardenCardId) {
+      selection.textContent = "请点击基础面或升级面原图上的任一候选格。";
+      $("layoutPlotTypeSelect").disabled = true;
+      $("layoutGoldenToggle").disabled = true;
+      $("resetLayoutFaceBtn").disabled = true;
+      return;
+    }
+    const faceLabel = selectedLayoutCell.side === "front" ? "基础面" : "升级面";
+    selection.textContent = `${faceLabel} · 第 ${selectedLayoutCell.x + 1} 列第 ${selectedLayoutCell.y + 1} 行`;
+    $("layoutPlotTypeSelect").disabled = false;
+    $("layoutPlotTypeSelect").value = entry?.type === "empty" && entry.upgraded ? "empty-upgraded" : (entry?.type || "none");
+    const canGolden = entry && ["blossom", "sun", "pine"].includes(entry.type);
+    $("layoutGoldenToggle").disabled = !canGolden;
+    $("layoutGoldenToggle").checked = Boolean(canGolden && entry.golden);
+    $("resetLayoutFaceBtn").disabled = false;
+  }
+
+  function applySelectedLayoutCell() {
+    if (!selectedLayoutCell) return;
+    const next = cloneData(layoutDraft || window.AleasGarden.getGardenLayouts());
+    const side = next.cards[selectedLayoutCell.cardId][selectedLayoutCell.side];
+    const selectedType = $("layoutPlotTypeSelect").value;
+    const type = selectedType === "empty-upgraded" ? "empty" : selectedType;
+    const upgraded = selectedType === "empty-upgraded";
+    const golden = ["blossom", "sun", "pine"].includes(type) && $("layoutGoldenToggle").checked;
+    side.plots = side.plots.filter((plot) => plot.x !== selectedLayoutCell.x || plot.y !== selectedLayoutCell.y);
+    if (type !== "none") side.plots.push({ x: selectedLayoutCell.x, y: selectedLayoutCell.y, type, golden, upgraded });
+    side.plots.sort((a, b) => a.y - b.y || a.x - b.x);
+    side.columns = Math.max(1, ...side.plots.map((plot) => plot.x + 1));
+    try {
+      saveLayoutDraft(next);
+    } catch (error) {
+      flashStatus(error.message || "布局修改无效。");
+      syncLayoutEditorPanel();
+      return;
+    }
+    renderCatalog();
+    openCardDialog({ id: selectedLayoutCell.cardId, name: selectedLayoutCell.cardId });
+  }
+
+  function undoLayoutEdit() {
+    const previous = layoutUndoStack.pop();
+    if (!previous) return;
+    saveLayoutDraft(previous, false);
+    renderCatalog();
+    if ($("cardDialog").open && openGardenCardId) openCardDialog({ id: openGardenCardId, name: openGardenCardId });
+  }
+
+  function resetSelectedLayoutFace() {
+    if (!selectedLayoutCell) return;
+    const next = cloneData(layoutDraft || window.AleasGarden.getGardenLayouts());
+    const defaults = window.AleasGarden.getDefaultGardenLayouts();
+    next.cards[selectedLayoutCell.cardId][selectedLayoutCell.side] = cloneData(defaults.cards[selectedLayoutCell.cardId][selectedLayoutCell.side]);
+    saveLayoutDraft(next);
+    renderCatalog();
+    openCardDialog({ id: selectedLayoutCell.cardId, name: selectedLayoutCell.cardId });
+  }
+
+  function resetAllLayouts() {
+    saveLayoutDraft(window.AleasGarden.getDefaultGardenLayouts());
+    selectedLayoutCell = null;
+    renderCatalog();
+    if ($("cardDialog").open && openGardenCardId) openCardDialog({ id: openGardenCardId, name: openGardenCardId });
+  }
+
+  function exportLayouts() {
+    const layouts = layoutDraft || window.AleasGarden.getGardenLayouts();
+    downloadJson(layouts, `aleas-garden-layouts-${new Date().toISOString().slice(0, 10)}.json`);
+    updateLayoutStatus("已导出完整布局 JSON。");
+  }
+
+  async function importLayouts(event) {
+    const input = event.currentTarget;
+    const file = input.files?.[0];
+    input.value = "";
+    if (!file) return;
+    try {
+      const parsed = JSON.parse(await file.text());
+      const migrated = window.AleasGarden.migrateGardenLayouts(parsed);
+      saveLayoutDraft(migrated);
+      selectedLayoutCell = null;
+      renderCatalog();
+      updateLayoutStatus("导入成功：完整布局已保存为下一局草稿。");
+    } catch (error) {
+      updateLayoutStatus(`导入失败：${error.message || "JSON 无效"}`);
+    }
   }
 
   function setCatalogTab(name) {
@@ -621,8 +1199,8 @@
           <span>${escapeHtml(card.name)}</span>
         </div>
         <div class="catalog-card-images">
-          ${catalogImageButton("基础面", card.frontImage, `${card.name} 基础面`)}
-          ${catalogImageButton("升级面", card.backImage, `${card.name} 升级面`)}
+          ${catalogImageButton("基础面", card.frontImage, `${card.name} 基础面`, gardenProgramOverlay(card.frontPlots))}
+          ${catalogImageButton("升级面", card.backImage, `${card.name} 升级面`, gardenProgramOverlay(card.backPlots))}
         </div>
         <p class="catalog-meta">升级费用 ${card.cost} 花 · 升级后 ${card.vp} 分 · 第 ${card.frontPage}/${card.backPage} 页</p>
         <ul class="catalog-effects">${(effects.length ? effects : ["无特殊效果。"]).map((text) => `<li>${escapeHtml(text)}</li>`).join("")}</ul>
@@ -643,7 +1221,10 @@
       item.className = "catalog-card action-catalog-card";
       item.innerHTML = `
         <button class="action-catalog-preview" type="button" aria-label="查看第 ${card.page} 页行动牌">
-          <img src="${card.image}" alt="行动牌第 ${card.page} 页">
+          <span class="catalog-image-stack">
+            <img src="${card.image}" alt="行动牌第 ${card.page} 页">
+            ${actionProgramOverlay(card)}
+          </span>
         </button>
         <div class="catalog-card-head">
           <strong>行动牌 ${card.page}</strong>
@@ -683,20 +1264,24 @@
     }
   }
 
-  function catalogImageButton(label, image, alt) {
+  function catalogImageButton(label, image, alt, overlay = "") {
     return `
       <button class="catalog-image-btn" type="button">
         <span>${escapeHtml(label)}</span>
-        <img src="${image}" alt="${escapeHtml(alt)}">
+        <span class="catalog-image-stack">
+          <img src="${image}" alt="${escapeHtml(alt)}">
+          ${overlay}
+        </span>
       </button>
     `;
   }
 
   function openActionDialog(card) {
+    openGardenCardId = null;
     $("cardDialogTitle").textContent = `行动牌 ${card.page}`;
     $("cardDialogMeta").textContent = `${card.waterText} · ${card.rotText} · ${card.bonusText}`;
     $("cardDetailImages").innerHTML = [
-      cardFigure("行动牌", card.image, `行动牌第 ${card.page} 页`),
+      cardFigure("行动牌", card.image, `行动牌第 ${card.page} 页`, actionProgramOverlay(card)),
     ].join("");
     const list = $("cardEffectList");
     list.innerHTML = "";
@@ -705,7 +1290,9 @@
       li.textContent = text;
       list.appendChild(li);
     }
-    $("cardDialog").showModal();
+    syncLayoutEditorPanel();
+    syncCatalogMarksVisibility();
+    if (!$("cardDialog").open) $("cardDialog").showModal();
   }
 
   function appendedGardenStart(before, after) {
@@ -734,12 +1321,14 @@
         ? `<img src="${top.image}" alt="行动牌 ${top.page}"><span>牌堆 ${index + 1} · ${s.actionPiles[index].length} 张</span>`
         : `<span>牌堆 ${index + 1} 已空</span>`;
     });
-    $("replantBtn").disabled = s.phase !== "action" || s.usedReplant || Boolean(s.currentAction);
+    $("replantBtn").disabled = !s.canReplant;
+    $("replantBtn").title = s.canReplant ? "重新洗混并布置本年花园" : "Replant 只能在每年第一张行动牌选择前使用一次";
   }
 
   function renderCurrentAction(s) {
     const panel = $("currentActionPanel");
     const current = s.currentAction;
+    document.querySelector(".action-zone")?.classList.toggle("has-current-action", Boolean(current));
     panel.hidden = !current;
     if (!current) return;
     const kindText = current.cubeKind === "water" ? "水" : "腐败";
